@@ -2,7 +2,7 @@
   "name": "L system studio ",
   "short_name": "Lsystem",
   "description": "אפליקציית PWA לאתר Lsystem",
-  "start_url": "https://hananel42.github.io/L-System-studio/",
+  "start_url": "https://hananel42.github.io/L-system-studio/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
