@@ -27,6 +27,21 @@
       touch-action: none;
       background: #fff;
     }
+    #loadInput {
+    display: none;
+  }
+
+  /* מראה מותאם אישית לכפתור */
+  .file-label {
+    padding: 6px 10px;
+      margin: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+  }
+
+  
     button {
       padding: 6px 10px;
       margin: 4px;
@@ -128,7 +143,8 @@
         <textarea id="genString" readonly></textarea>
       </div>
       <button id="saveBtn">Save</button>
-      <input type="file" id="loadInput" />
+     <label for="loadInput" class="file-label">Load File</label>
+<input type="file" id="loadInput" />
     </aside>
   </div>
 
