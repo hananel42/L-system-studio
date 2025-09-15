@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L-System Studio</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+      background: #f0f0f0;
+    }
+    #app {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+      background: #fff;
+    }
+    button {
+      padding: 6px 10px;
+      margin: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+    }
+    aside {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 70%;
+      height: 100%;
+      background: #fff;
+      border-left: 2px solid #ccc;
+      overflow: auto;
+      padding: 10px;
+      display: none;
+    }
+    aside.open {
+      z-index: 50;
+      display: block;
+    }
+    input, select  {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 4px;
+    }
+    textarea{
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 4px;
+      width: 100%;
+    }
+    .rule-row, .symbol-row, .new-symbol-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+    /* notice */
+    .notice {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 16px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      z-index: 9999;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <canvas id="canvas"></canvas>
+    <button id="resetBtn" style="position:absolute;top:10px;right:10px;z-index:10;">Reset View</button>
+    <button id="editorToggle" style="position:absolute;top:10px;left:10px;z-index:10;">Open Editor</button>
+
+    <aside id="editor">
+      <h2>Editor</h2>
+      <div>
+        <label>Axiom</label>
+        <input id="axiomInput" />
+      </div>
+      <div>
+        <label>Rules</label>
+        <div id="rules"></div>
+        <button id="addRuleBtn">+ Add Rule</button>
+      </div>
+      <div>
+        <label>Iterations</label>
+        <input type="number" id="iterationsInput" />
+      </div>
+      <div>
+        <label>Symbols</label>
+        <div id="symbols"></div>
+      </div>
+      <div>
+        <label>Add New Symbol</label>
+        <div class="new-symbol-row">
+          <input id="newSym" placeholder="Symbol" maxlength="1" size="2" />
+          <select id="newSymType">
+            <option value="draw">Draw</option>
+            <option value="turn">Turn</option>
+            <option value="push">Push</option>
+            <option value="pop">Pop</option>
+          </select>
+          <input id="newSymValue" placeholder="Value" size="2"/>
+          <input type="color" id="newSymColor" value="#000000" class="symInput" size="2"/>
+          <button id="addSymBtn">Add</button>
+        </div>
+      </div>
+      <div>
+        <label>Generated String</label><br/>
+        <textarea id="genString" readonly></textarea>
+      </div>
+      <button id="saveBtn">Save</button>
+      <input type="file" id="loadInput" />
+    </aside>
+  </div>
+
+  <div id="notice" class="notice"></div>
+
+  <script>
+    // ---- Helpers ----
+    function showNotice(msg, timeout = 3000) {
+      const n = document.getElementById('notice');
+      n.textContent = msg;
+      n.style.display = 'block';
+      clearTimeout(n._t);
+      n._t = setTimeout(()=> n.style.display='none', timeout);
+    }
+    function escapeHtml(s){
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // ---- L-System Generator ----
+    function genLSystem(params) {
+      let { axiom, rules, symbols, length, iterations } = params;
+      let str = axiom;
+      const ruleMap = {};
+      rules.forEach(r => ruleMap[r.a] = r.b);
+
+      for (let i = 0; i < iterations; i++) {
+        let next = '';
+        for (const ch of str) next += ruleMap[ch] || ch;
+        str = next;
+        if (str.length > 200000) break;
+      }
+
+      let x = 0, y = 0, dir = -Math.PI / 2;
+      const stack = [];
+      const pts = [];
+      let currentColor = '#000';
+
+      for (const ch of str) {
+        const action = symbols[ch];
+        if (!action) continue;
+        if (action.type === 'draw') {
+          const len = parseFloat(action.length) || length || 10;
+          currentColor = action.color || currentColor;
+          const nx = x + Math.cos(dir) * len;
+          const ny = y + Math.sin(dir) * len;
+          pts.push({ x, y, nx, ny, color: currentColor });
+          x = nx; y = ny;
+        } else if (action.type === 'turn') {
+          dir += (parseFloat(action.angle) || 0) * Math.PI / 180;
+        } else if (action.type === 'push') {
+          stack.push({ x, y, dir, currentColor });
+        } else if (action.type === 'pop') {
+          const s = stack.pop();
+          if (s) { x = s.x; y = s.y; dir = s.dir; currentColor = s.currentColor; }
+        }
+      }
+      return { points: pts, meta: { text: str } };
+    }
+
+    // ---- State ----
+    let params = {
+      axiom: 'X',
+      rules: [
+        { a: 'X', b: 'F+[[X]-X]-F[-FX]+X' },
+        { a: 'F', b: 'FF' }
+      ],
+      symbols: {
+        'F': { type: 'draw', color: '#0ea5e9', length: 6 },
+        '+': { type: 'turn', angle: 25 },
+        '-': { type: 'turn', angle: -25 },
+        '[': { type: 'push' },
+        ']': { type: 'pop' }
+      },
+      iterations: 5,
+      length: 6
+    };
+    let shapeData = genLSystem(params);
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const state = { zoom: 1, offsetX: 0, offsetY: 0 };
+
+    function render() {
+      canvas.width = canvas.clientWidth * devicePixelRatio;
+      canvas.height = canvas.clientHeight * devicePixelRatio;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.setTransform(1,0,0,1,0,0);
+      ctx.save();
+      ctx.translate(canvas.width/2 + state.offsetX, canvas.height/2 + state.offsetY);
+      ctx.scale(state.zoom, state.zoom);
+
+      if (shapeData && shapeData.points) {
+        for (const seg of shapeData.points) {
+          ctx.beginPath();
+          ctx.moveTo(seg.x, seg.y);
+          ctx.lineTo(seg.nx, seg.ny);
+          ctx.strokeStyle = seg.color;
+          ctx.lineWidth = Math.max(0.5/state.zoom, 0.2);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+      requestAnimationFrame(render);
+    }
+    render();
+
+    // ---- Controls ----
+    document.getElementById('resetBtn').onclick = () => { state.zoom = 1; state.offsetX=0; state.offsetY=0; };
+    document.getElementById('editorToggle').onclick = () => {
+      const ed = document.getElementById('editor');
+      ed.classList.toggle('open');
+      document.getElementById('editorToggle').innerText = ed.classList.contains('open') ? 'Close Editor' : 'Open Editor';
+      refreshEditor();
+    };
+
+    function refreshEditor() {
+      document.getElementById('axiomInput').value = params.axiom;
+      document.getElementById('iterationsInput').value = params.iterations;
+      document.getElementById('genString').value = shapeData.meta.text;
+      const rulesDiv = document.getElementById('rules');
+      rulesDiv.innerHTML = '';
+      params.rules.forEach((r, idx) => {
+        const row = document.createElement('div');
+        row.className = 'rule-row';
+        row.innerHTML = `<input class="ra" value="${r.a}" size="2"/> → <input class="rb" value="${r.b}"/> <button>✕</button>`;
+        row.querySelector('.ra').oninput = e => { r.a = e.target.value; update(); };
+        row.querySelector('.rb').oninput = e => { r.b = e.target.value; update(); };
+        row.querySelector('button').onclick = () => { params.rules.splice(idx,1); update(); refreshEditor(); };
+        rulesDiv.appendChild(row);
+      });
+      const symbolsDiv = document.getElementById('symbols');
+      symbolsDiv.innerHTML = '';
+      Object.entries(params.symbols).forEach(([sym, action]) => {
+        const row = document.createElement('div');
+        row.className = 'symbol-row';
+        let inner = `<input value="${sym}" readonly size="2"/> <select class="stype">
+          <option value="draw">Draw</option>
+          <option value="turn">Turn</option>
+          <option value="push">Push</option>
+          <option value="pop">Pop</option></select>`;
+        if (action.type==='draw') inner += `<input class="slen" value="${action.length||''}" size="4"/> <input type="color" class="scol" value="${action.color||'#000'}"/>`;
+        if (action.type==='turn') inner += `<input class="sang" value="${action.angle||''}" size="4"/>`;
+        inner += ` <button>✕</button>`;
+        row.innerHTML = inner;
+        row.querySelector('.stype').value = action.type;
+        row.querySelector('.stype').onchange = e => { action.type=e.target.value; update(); refreshEditor(); };
+        if (row.querySelector('.slen')) row.querySelector('.slen').oninput = e => { action.length=parseFloat(e.target.value)||0; update(); };
+        if (row.querySelector('.scol')) row.querySelector('.scol').oninput = e => { action.color=e.target.value; update(); };
+        if (row.querySelector('.sang')) row.querySelector('.sang').oninput = e => { action.angle=parseFloat(e.target.value)||0; update(); };
+        row.querySelector('button').onclick = () => { delete params.symbols[sym]; update(); refreshEditor(); };
+        symbolsDiv.appendChild(row);
+      });
+    }
+
+    document.getElementById('axiomInput').oninput = e => { params.axiom = e.target.value; update(); };
+    document.getElementById('iterationsInput').oninput = e => { params.iterations = parseInt(e.target.value)||0; update(); };
+
+    document.getElementById('addRuleBtn').onclick = () => { params.rules.push({a:'',b:''}); refreshEditor(); };
+
+    document.getElementById('addSymBtn').onclick = () => {
+      const sym = document.getElementById('newSym').value;
+      const type = document.getElementById('newSymType').value;
+      const val = document.getElementById('newSymValue').value;
+      const color = document.getElementById('newSymColor').value;
+      if (!sym) { showNotice('Enter a symbol (single character) before adding.'); return; }
+      const obj = { type };
+      if (type==='draw') { obj.length=parseFloat(val)||params.length; obj.color=color; }
+      if (type==='turn') obj.angle=parseFloat(val)||0;
+      params.symbols[sym]=obj;
+      document.getElementById('newSym').value='';
+      document.getElementById('newSymValue').value='';
+      refreshEditor();
+    };
+
+    // ---- Robust Save handler with fallbacks ----
+    document.getElementById('saveBtn').onclick = () => {
+      const dataStr = JSON.stringify(params, null, 2);
+      try {
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        // IE / Edge legacy
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveOrOpenBlob(blob, 'lsystem.json');
+          showNotice('Saved (msSaveOrOpenBlob).');
+          return;
+        }
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'lsystem.json';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+
+        // Some browsers (iOS Safari) ignore the download attribute — try click(), then fallback to open()
+        a.click();
+
+        // Cleanup
+        setTimeout(() => {
+          try { document.body.removeChild(a); } catch (e) {}
+          try { URL.revokeObjectURL(url); } catch (e) {}
+        }, 1000);
+
+        // Detect common platforms that ignore download attribute and open blob in new tab as fallback
+        const isIos = /iP(ad|od|hone)/i.test(navigator.userAgent);
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        if (isIos || (isSafari && !('download' in a))) {
+          // open in new tab so user can long-press and save/share
+          window.open(url, '_blank');
+          showNotice('If the file did not download automatically, a new tab was opened — long-press the JSON to save or share it.');
+        } else {
+          showNotice('Download started.');
+        }
+      } catch (err) {
+        // final fallback — open JSON in new tab for manual copy
+        const w = window.open('', '_blank');
+        if (w) {
+          w.document.write('<pre>' + escapeHtml(dataStr) + '</pre>');
+          w.document.title = 'lsystem.json';
+          showNotice('Could not generate a direct download. JSON opened in a new tab — copy & save manually.');
+        } else {
+          showNotice('Unable to save: popup blocked. Copy the JSON from the editor.');
+        }
+      }
+    };
+
+    document.getElementById('loadInput').onchange = e => {
+      const file=e.target.files[0];
+      if (!file) return;
+      const reader=new FileReader();
+      reader.onload=ev => {
+        try {
+          const parsed = JSON.parse(ev.target.result);
+          params = parsed;
+          update();
+          refreshEditor();
+          showNotice('Loaded configuration.');
+        } catch (err) {
+          showNotice('Invalid JSON file.');
+          console.error(err);
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    function update(){
+      shapeData=genLSystem(params);
+      document.getElementById('genString').value = shapeData.meta.text;
+    }
+
+    // pan + zoom with mouse
+    let isPanning=false; let last={x:0,y:0};
+    canvas.addEventListener('mousedown',e=>{isPanning=true;last={x:e.clientX,y:e.clientY};});
+    canvas.addEventListener('mousemove',e=>{if(isPanning){state.offsetX+=e.clientX-last.x; state.offsetY+=e.clientY-last.y; last={x:e.clientX,y:e.clientY};}});
+    canvas.addEventListener('mouseup',()=>isPanning=false);
+    canvas.addEventListener('mouseleave',()=>isPanning=false);
+    canvas.addEventListener('wheel',e=>{e.preventDefault(); state.zoom *= e.deltaY<0?1.1:0.9;},{passive:false});
+
+    // touch gestures
+    let lastDist=null;
+    canvas.addEventListener('touchstart',e=>{
+      if (e.touches.length===2) lastDist=getDist(e.touches);
+      else if (e.touches.length===1){isPanning=true;last={x:e.touches[0].clientX,y:e.touches[0].clientY};}
+      e.preventDefault();
+    },{passive:false});
+    canvas.addEventListener('touchmove',e=>{
+      if (e.touches.length===2 && lastDist){
+        const newD=getDist(e.touches);
+        state.zoom *= newD/lastDist;
+        lastDist=newD;
+      } else if (e.touches.length===1 && isPanning){
+        state.offsetX+=e.touches[0].clientX-last.x; state.offsetY+=e.touches[0].clientY-last.y;
+        last={x:e.touches[0].clientX,y:e.touches[0].clientY};
+      }
+      e.preventDefault();
+    },{passive:false});
+    canvas.addEventListener('touchend',e=>{if(e.touches.length<2)lastDist=null; if(e.touches.length===0)isPanning=false;},{passive:false});
+
+    function getDist(touches){
+      const dx=touches[0].clientX-touches[1].clientX;
+      const dy=touches[0].clientY-touches[1].clientY;
+      return Math.hypot(dx,dy);
+    }
+  </script>
+</body>
+</html>
