@@ -336,7 +336,7 @@
         }
 
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
+        let a = document.createElement('a');
         a.href = url;
         a.download = 'lsystem.json';
         a.style.display = 'none';
@@ -347,7 +347,7 @@
 
         // Cleanup
         setTimeout(() => {
-          try { document.body.removeChild(a); } catch (e) {}
+          try { document.body.removeChild(a);a=null; } catch (e) {}
           try { URL.revokeObjectURL(url); } catch (e) {}
         }, 1000);
 
