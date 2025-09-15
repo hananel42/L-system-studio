@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0ea5e9">
-  
   <title>L-System Studio</title>
   <style>
     body, html {
@@ -148,6 +148,8 @@
       <button id="saveBtn">Save</button>
      <label for="loadInput" class="file-label">Load File</label>
 <input type="file" id="loadInput" />
+      <button id="shareBtn">Share Link</button>
+      
     </aside>
   </div>
 
@@ -336,7 +338,7 @@
         }
 
         const url = URL.createObjectURL(blob);
-        let a = document.createElement('a');
+        const a = document.createElement('a');
         a.href = url;
         a.download = 'lsystem.json';
         a.style.display = 'none';
@@ -347,7 +349,7 @@
 
         // Cleanup
         setTimeout(() => {
-          try { document.body.removeChild(a);a=null; } catch (e) {}
+          try { document.body.removeChild(a); } catch (e) {}
           try { URL.revokeObjectURL(url); } catch (e) {}
         }, 1000);
 
@@ -431,6 +433,36 @@
       const dy=touches[0].clientY-touches[1].clientY;
       return Math.hypot(dx,dy);
     }
+    function loadParamsFromURL() {
+  const urlParams = new URLSearchParams(location.search);
+  const encoded = urlParams.get("data");
+  if (encoded) {
+    try {
+      const json = decodeURIComponent(escape(atob(encoded)));
+      params = JSON.parse(json);
+      update();
+      refreshEditor();
+      showNotice("Loaded shared configuration from URL.");
+    } catch (e) {
+      console.error(e);
+      showNotice("Invalid shared link.");
+    }
+  }
+}
+loadParamsFromURL();
+    function paramsToURL(params) {
+  const json = JSON.stringify(params);
+  return btoa(unescape(encodeURIComponent(json))); // base64
+}
+    
+    document.getElementById("shareBtn").onclick = () => {
+  const encoded = paramsToURL(params);
+  const url = `${location.origin}${location.pathname}?data=${encoded}`;
+  navigator.clipboard.writeText(url).then(()=>{
+    showNotice("Share link copied to clipboard!");
+  });
+};
+    
   </script>
 </body>
 </html>
