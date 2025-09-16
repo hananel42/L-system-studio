@@ -1,0 +1,77 @@
+{
+  "examples": [
+    {
+      "name": "Fractal Tree",
+      "axiom": "X",
+      "rules": [
+        {"a": "X", "b": "F+[[X]-X]-F[-FX]+X"},
+        {"a": "F", "b": "FF"}
+      ],
+      "symbols": {
+        "F": {"type": "draw", "color": "#0ea5e9", "length": 6},
+        "+": {"type": "turn", "angle": 25},
+        "-": {"type": "turn", "angle": -25},
+        "[": {"type": "push"},
+        "]": {"type": "pop"}
+      },
+      "iterations": 5
+    },
+    {
+      "name": "Koch Curve",
+      "axiom": "F",
+      "rules": [
+        {"a": "F", "b": "F+F-F-F+F"}
+      ],
+      "symbols": {
+        "F": {"type": "draw", "color": "#ff0000", "length": 10},
+        "+": {"type": "turn", "angle": 90},
+        "-": {"type": "turn", "angle": -90}
+      },
+      "iterations": 4
+    },
+    {
+      "name": "Sierpinski Triangle",
+      "axiom": "F-G-G",
+      "rules": [
+        {"a": "F", "b": "F-G+F+G-F"},
+        {"a": "G", "b": "GG"}
+      ],
+      "symbols": {
+        "F": {"type": "draw", "color": "#00ff00", "length": 6},
+        "G": {"type": "draw", "color": "#00ff00", "length": 6},
+        "+": {"type": "turn", "angle": 120},
+        "-": {"type": "turn", "angle": -120}
+      },
+      "iterations": 5
+    },
+    {
+      "name": "Dragon Curve",
+      "axiom": "FX",
+      "rules": [
+        {"a": "X", "b": "X+YF+"},
+        {"a": "Y", "b": "-FX-Y"}
+      ],
+      "symbols": {
+        "F": {"type": "draw", "color": "#ff00ff", "length": 10},
+        "X": {"type": "draw", "color": "#ff00ff", "length": 0},
+        "Y": {"type": "draw", "color": "#ff00ff", "length": 0},
+        "+": {"type": "turn", "angle": 90},
+        "-": {"type": "turn", "angle": -90}
+      },
+      "iterations": 10
+    },
+    {
+      "name": "Simple Spiral",
+      "axiom": "F",
+      "rules": [
+        {"a": "F", "b": "F+F-F"}
+      ],
+      "symbols": {
+        "F": {"type": "draw", "color": "#ffa500", "length": 5},
+        "+": {"type": "turn", "angle": 60},
+        "-": {"type": "turn", "angle": -60}
+      },
+      "iterations": 6
+    }
+  ]
+}
