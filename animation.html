@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L-System Animation Loader</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    canvas {
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    #notice {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="notice"></div>
+
+  <script>
+    function showNotice(msg, timeout=3000){
+      const n=document.getElementById('notice');
+      n.textContent=msg;
+      n.style.display='block';
+      clearTimeout(n._t);
+      n._t=setTimeout(()=>n.style.display='none',timeout);
+    }
+
+    // ---- L-System Generator ----
+    function genLSystem(params){
+      let { axiom, rules, symbols, length, iterations } = params;
+      let str=axiom;
+      const ruleMap={};
+      rules.forEach(r=>ruleMap[r.a]=r.b);
+
+      for(let i=0;i<iterations;i++){
+        let next='';
+        for(const ch of str) next += ruleMap[ch]||ch;
+        str=next;
+        if(str.length>200000) break;
+      }
+
+      let x=0,y=0,dir=-Math.PI/2;
+      const stack=[];
+      const pts=[];
+      let currentColor='#000';
+
+      for(const ch of str){
+        const action=symbols[ch];
+        if(!action) continue;
+        if(action.type==='draw'){
+          const len=parseFloat(action.length)||length||10;
+          currentColor=action.color||currentColor;
+          const nx=x+Math.cos(dir)*len;
+          const ny=y+Math.sin(dir)*len;
+          pts.push({x,y,nx,ny,color:currentColor});
+          x=nx;y=ny;
+        } else if(action.type==='turn'){
+          dir += (parseFloat(action.angle)||0)*Math.PI/180;
+        } else if(action.type==='push'){
+          stack.push({x,y,dir,currentColor});
+        } else if(action.type==='pop'){
+          const s=stack.pop();
+          if(s){x=s.x;y=s.y;dir=s.dir;currentColor=s.currentColor;}
+        }
+      }
+      return {points:pts,meta:{text:str}};
+    }
+
+    // ---- Animation ----
+    const canvas=document.getElementById('canvas');
+    const ctx=canvas.getContext('2d');
+    let shapeData=null;
+    let animIndex=0;
+
+    function renderAnim(){
+      canvas.width=canvas.clientWidth*devicePixelRatio;
+      canvas.height=canvas.clientHeight*devicePixelRatio;
+      ctx.setTransform(1,0,0,1,0,0);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.save();
+      ctx.translate(canvas.width/2,canvas.height/2);
+      ctx.scale(1,1);
+
+      if(shapeData && shapeData.points){
+        for(let i=0;i<animIndex && i<shapeData.points.length;i++){
+          const seg=shapeData.points[i];
+          ctx.beginPath();
+          ctx.moveTo(seg.x,seg.y);
+          ctx.lineTo(seg.nx,seg.ny);
+          ctx.strokeStyle=seg.color;
+          ctx.lineWidth=1;
+          ctx.stroke();
+        }
+        if(animIndex<shapeData.points.length){
+          animIndex+=2; // כמה קווים לצייר בכל פריים
+          requestAnimationFrame(renderAnim);
+        }
+      }
+      ctx.restore();
+    }
+
+    // ---- Load from URL ----
+    function loadParamsFromURL(){
+      const urlParams=new URLSearchParams(location.search);
+      const encoded=urlParams.get("data");
+      if(encoded){
+        try{
+          const json=decodeURIComponent(escape(atob(encoded)));
+          const params=JSON.parse(json);
+          shapeData=genLSystem(params);
+          animIndex=0;
+          showNotice("Loaded configuration from URL. Starting animation...");
+          requestAnimationFrame(renderAnim);
+        }catch(e){
+          console.error(e);
+          showNotice("Invalid shared link.");
+        }
+      } else {
+        showNotice("No ?data= found in URL");
+      }
+    }
+
+    loadParamsFromURL();
+  </script>
+</body>
+</html>
