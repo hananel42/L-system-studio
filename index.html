@@ -99,6 +99,20 @@
       z-index: 9999;
       display: none;
     }
+    #guideBox {
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%; max-width: 600px;
+      background: white;
+      border: 2px solid black;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+    #guideBox h2 { margin-top: 0; }
+    
   </style>
 </head>
 <body>
@@ -109,6 +123,21 @@
 
     <aside id="editor">
       <h2>Editor</h2>
+      <button onclick="showGuide()">מדריך</button>
+      <div id="guideBox" dir="rtl">
+    <h2>מדריך שימוש בעורך L-System</h2>
+    <p>
+      התחל מהגדרת <b>אקסיומה</b> (לדוגמה F). הוסף <b>כללים</b> על ידי ציון תו שמוחלף במחרוזת אחרת
+      (לדוגמה F → F+F−F).</br>
+        לכל <b>סמל</b> ניתן לבחור פעולה (ציור קו, פניה ימינה/שמאלה, דילוג וכו'),
+      וגם לשנות צבע, אורך, וזווית. </br>
+      הגדל את מספר האיטרציות כדי לקבל צורות מורכבות יותר.</br>
+      השתמש בקנבס כדי לראות את התוצאה – גרור עם העכבר להזזה וגלגלת/מגע לזום.</br>
+      
+      תוכל להעתיק קישור או להוריד קובץ JSON כדי לשתף.
+    </p>
+    <button onclick="hideGuide()">סגור</button>
+      </div>
       <div>
         <label>Axiom</label>
         <input id="axiomInput" />
@@ -156,6 +185,14 @@
   <div id="notice" class="notice"></div>
 
   <script>
+    function showGuide() {
+      document.getElementById('guideBox').style.display = 'block';
+      
+    }
+    function hideGuide() {
+      document.getElementById('guideBox').style.display = 'none';
+      
+    }
     // ---- Helpers ----
     function showNotice(msg, timeout = 3000) {
       const n = document.getElementById('notice');
