@@ -12,7 +12,7 @@
       top: 10px;
       right: 10px;
       display: flex;
-      flex-direction: column;
+      flex-direction: row-reverse;
       gap: 6px;
       z-index: 10;
     }
@@ -27,7 +27,7 @@
   <div id="controls">
     <label style="color:white;font-size:13px;">Speed <input type="range" id="speedSlider" min="1" max="150" value="20"></label>
     <button id="editBtn">Edit</button>
-    
+     <button id="shareBtn">Share Link</button>
     <button id="restartBtn">Restart</button>
   </div>
   <div id="notice"></div>
@@ -196,7 +196,13 @@
     alert("No data found to edit!");
   }
 };
-    
+    document.getElementById("shareBtn").onclick = () => {
+  const encoded = paramsToURL(params);
+  const url = `${location.origin}${location.pathname}?data=${encoded}`;
+  navigator.clipboard.writeText(url).then(()=>{
+    showNotice("Share link copied to clipboard!");
+  });
+};
   </script>
 </body>
 </html>
