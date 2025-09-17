@@ -13,15 +13,7 @@ L-Systems מבוסס על **חוקים חוזרים** שמגדירים איך מ
 - טעינת דוגמאות מוכנות (`examples.json`).
 - ממשק נקי וקל לשימוש (`index.html` ו-`animation.html`).
 
-## התקנה והפעלה
-1. הורד את הפרויקט או השתמש ב-Git:
-   `
-git clone https://github.com/hananel42/L-system-studio.git
-`
-
-2. פתח את `index.html` בדפדפן שלך.
-3. פתח את `animation.html` כדי לראות את האנימציות.
-4. שנה את חוקי ה-L-System בקבצים כדי ליצור דפוסים חדשים.
+   * הפרויקט זמין בקישור [L system studio](https://hananel42.github.io/L-system-studio/)
 
 ## רישיון
 
