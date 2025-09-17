@@ -200,13 +200,15 @@
   const urlParams = new URLSearchParams(location.search);
   const encoded = urlParams.get("data");
   if (encoded) {
+    
     const url = `${location.origin}${location.pathname}?data=${encoded}`;
     navigator.clipboard.writeText(url).then(()=>{
     showNotice("Share link copied to clipboard!");
+    });
   } else {
     showNotice("No data found to edit!");
   }
-  });
+  
 };
   </script>
 </body>
