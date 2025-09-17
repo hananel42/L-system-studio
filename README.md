@@ -26,3 +26,5 @@ The code is open for free use, with mandatory source attribution:
 
 **L-System Studio** – Free creation, fast learning, and enjoyment of L-Systems.
 If you like this project, please give it a ⭐️!
+
+for more information about the project [L system wiki](https://github.com/hananel42/L-system-studio.wiki.git)
