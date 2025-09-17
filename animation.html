@@ -27,7 +27,7 @@
   <div id="controls">
     <label style="color:white;font-size:13px;">Speed <input type="range" id="speedSlider" min="1" max="150" value="20"></label>
     <button id="editBtn">Edit</button>
-     <button id="shareBtn">Share Link</button>
+     <button id="shareBtn">Share</button>
     <button id="restartBtn">Restart</button>
   </div>
   <div id="notice"></div>
@@ -193,14 +193,19 @@
     const editUrl = `${location.origin}${location.pathname.replace("animation.html","")}index.html?data=${encoded}`;
     location.href = editUrl; // באותו חלון
   } else {
-    alert("No data found to edit!");
+    showNotice("No data found to edit!");
   }
 };
     document.getElementById("shareBtn").onclick = () => {
-  const encoded = paramsToURL(params);
-  const url = `${location.origin}${location.pathname}?data=${encoded}`;
-  navigator.clipboard.writeText(url).then(()=>{
+  const urlParams = new URLSearchParams(location.search);
+  const encoded = urlParams.get("data");
+  if (encoded) {
+    const url = `${location.origin}${location.pathname}?data=${encoded}`;
+    navigator.clipboard.writeText(url).then(()=>{
     showNotice("Share link copied to clipboard!");
+  } else {
+    showNotice("No data found to edit!");
+  }
   });
 };
   </script>
