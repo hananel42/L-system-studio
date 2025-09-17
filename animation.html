@@ -56,6 +56,8 @@
   <canvas id="canvas"></canvas>
   <div id="controls">
     <label style="color:white;font-size:13px;">Speed <input type="range" id="speedSlider" min="1" max="150" value="20"></label>
+    <button id="editBtn">Edit</button>
+    
     <button id="restartBtn">Restart</button>
   </div>
   <div id="notice"></div>
@@ -214,6 +216,17 @@
     }
 
     loadParamsFromURL();
+    document.getElementById("editBtn").onclick = () => {
+  const urlParams = new URLSearchParams(location.search);
+  const encoded = urlParams.get("data");
+  if (encoded) {
+    const editUrl = `${location.origin}${location.pathname.replace("animation.html","")}index.html?data=${encoded}`;
+    location.href = editUrl; // באותו חלון
+  } else {
+    alert("No data found to edit!");
+  }
+};
+    
   </script>
 </body>
 </html>
