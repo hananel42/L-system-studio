@@ -125,6 +125,7 @@
     document.getElementById('speedSlider').oninput=e=>{speed=parseInt(e.target.value)||2;};
     document.getElementById('restartBtn').onclick=()=>{
       animIndex=0;
+      state={zoom:1,offsetX:0,offsetY:0};
       document.getElementById('restartBtn').style.display='none';
       requestAnimationFrame(renderAnim);
     };
