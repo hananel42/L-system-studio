@@ -20,6 +20,7 @@
       width: 100%;
       height: 100%;
       display: block;
+      touch-action: none;
     }
     #notice {
       position: fixed;
@@ -33,10 +34,30 @@
       font-size: 14px;
       display: none;
     }
+    #controls {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 10;
+    }
+    #controls button, #controls input[type=range] {
+      padding: 4px 6px;
+      font-size: 14px;
+    }
+    #restartBtn {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <canvas id="canvas"></canvas>
+  <div id="controls">
+    <label style="color:white;font-size:13px;">Speed <input type="range" id="speedSlider" min="1" max="20" value="2"></label>
+    <button id="restartBtn">Restart</button>
+  </div>
   <div id="notice"></div>
 
   <script>
@@ -94,6 +115,9 @@
     const ctx=canvas.getContext('2d');
     let shapeData=null;
     let animIndex=0;
+    let speed=2;
+    let state={zoom:1,offsetX:0,offsetY:0};
+    let isPanning=false; let last={x:0,y:0}; let lastDist=null;
 
     function renderAnim(){
       canvas.width=canvas.clientWidth*devicePixelRatio;
@@ -101,8 +125,8 @@
       ctx.setTransform(1,0,0,1,0,0);
       ctx.clearRect(0,0,canvas.width,canvas.height);
       ctx.save();
-      ctx.translate(canvas.width/2,canvas.height/2);
-      ctx.scale(1,1);
+      ctx.translate(canvas.width/2+state.offsetX,canvas.height/2+state.offsetY);
+      ctx.scale(state.zoom,state.zoom);
 
       if(shapeData && shapeData.points){
         for(let i=0;i<animIndex && i<shapeData.points.length;i++){
@@ -111,15 +135,59 @@
           ctx.moveTo(seg.x,seg.y);
           ctx.lineTo(seg.nx,seg.ny);
           ctx.strokeStyle=seg.color;
-          ctx.lineWidth=1;
+          ctx.lineWidth=1/state.zoom;
           ctx.stroke();
         }
         if(animIndex<shapeData.points.length){
-          animIndex+=2; // כמה קווים לצייר בכל פריים
+          animIndex+=speed;
           requestAnimationFrame(renderAnim);
+        } else {
+          document.getElementById('restartBtn').style.display='block';
         }
       }
       ctx.restore();
+    }
+
+    // ---- Controls ----
+    document.getElementById('speedSlider').oninput=e=>{speed=parseInt(e.target.value)||2;};
+    document.getElementById('restartBtn').onclick=()=>{
+      animIndex=0;
+      document.getElementById('restartBtn').style.display='none';
+      requestAnimationFrame(renderAnim);
+    };
+
+    // ---- Navigation (mouse + touch) ----
+    canvas.addEventListener('mousedown',e=>{isPanning=true;last={x:e.clientX,y:e.clientY};});
+    canvas.addEventListener('mousemove',e=>{if(isPanning){state.offsetX+=(e.clientX-last.x);state.offsetY+=(e.clientY-last.y);last={x:e.clientX,y:e.clientY};}});
+    canvas.addEventListener('mouseup',()=>isPanning=false);
+    canvas.addEventListener('mouseleave',()=>isPanning=false);
+    canvas.addEventListener('wheel',e=>{e.preventDefault();state.zoom*=e.deltaY<0?1.1:0.9;},{passive:false});
+
+    canvas.addEventListener('touchstart',e=>{
+      if(e.touches.length===2){lastDist=getDist(e.touches);} 
+      else if(e.touches.length===1){isPanning=true;last={x:e.touches[0].clientX,y:e.touches[0].clientY};}
+      e.preventDefault();
+    },{passive:false});
+
+    canvas.addEventListener('touchmove',e=>{
+      if(e.touches.length===2 && lastDist){
+        const newD=getDist(e.touches);
+        state.zoom*=newD/lastDist;
+        lastDist=newD;
+      } else if(e.touches.length===1 && isPanning){
+        state.offsetX+=(e.touches[0].clientX-last.x);
+        state.offsetY+=(e.touches[0].clientY-last.y);
+        last={x:e.touches[0].clientX,y:e.touches[0].clientY};
+      }
+      e.preventDefault();
+    },{passive:false});
+
+    canvas.addEventListener('touchend',e=>{if(e.touches.length<2)lastDist=null;if(e.touches.length===0)isPanning=false;},{passive:false});
+
+    function getDist(touches){
+      const dx=touches[0].clientX-touches[1].clientX;
+      const dy=touches[0].clientY-touches[1].clientY;
+      return Math.hypot(dx,dy);
     }
 
     // ---- Load from URL ----
@@ -132,6 +200,8 @@
           const params=JSON.parse(json);
           shapeData=genLSystem(params);
           animIndex=0;
+          state={zoom:1,offsetX:0,offsetY:0};
+          document.getElementById('restartBtn').style.display='none';
           showNotice("Loaded configuration from URL. Starting animation...");
           requestAnimationFrame(renderAnim);
         }catch(e){
