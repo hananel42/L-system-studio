@@ -112,10 +112,11 @@
         }
         if(animIndex<shapeData.points.length){
           animIndex+=speed;
-          requestAnimationFrame(renderAnim);
+          
         } else {
           document.getElementById('restartBtn').style.display='block';
         }
+        requestAnimationFrame(renderAnim);
       }
       ctx.restore();
     }
