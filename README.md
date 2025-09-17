@@ -15,9 +15,9 @@ L-Systems מבוסס על **חוקים חוזרים** שמגדירים איך מ
 
 ## התקנה והפעלה
 1. הורד את הפרויקט או השתמש ב-Git:
-   ```
+   `
 git clone https://github.com/hananel42/L-system-studio.git
-````
+`
 
 2. פתח את `index.html` בדפדפן שלך.
 3. פתח את `animation.html` כדי לראות את האנימציות.
