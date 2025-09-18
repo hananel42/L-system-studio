@@ -82,9 +82,7 @@
                 </select>
                 <button id="animBtn">Open Animation</button>
                 </br>
-                <label>Background Color</label>
-                <input type="color" id="bgColorPicker" value="#ffffff" />
-                <button id="setBgBtn">Set Background</button>
+                <label>Background Color</label><input type="color" id="bgColorPicker" value="#ffffff" />
             </div>
 
         </aside>
@@ -94,7 +92,7 @@
 
     
     <script>
-        document.getElementById('setBgBtn').onclick = () => {const color = document.getElementById('bgColorPicker').value;canvas.style.background = color;};
+        document.getElementById('bgColorPicker').onchange = () => {const color = document.getElementById('bgColorPicker').value;canvas.style.background = color;};
         function showGuide() {document.getElementById('guideBox').style.display = 'block';}
         function hideGuide() {document.getElementById('guideBox').style.display = 'none';}
         // ---- Helpers ----
