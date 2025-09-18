@@ -55,7 +55,13 @@ aside.open {
   z-index: 50;
   display: block;
 } 
-input, select {
+input {
+  border: 1px solid #ccc;
+  border-radius: 4px; 
+  padding: 4px;
+} 
+select {
+  width : 100%;
   border: 1px solid #ccc;
   border-radius: 4px; 
   padding: 4px;
