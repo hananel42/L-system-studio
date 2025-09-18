@@ -81,8 +81,11 @@
     <option value="">-- Select Example --</option>
   </select>
    <button id="animBtn">Open Animation</button>
-        
-      </div>
+      </br>
+  <label>Background Color</label>
+  <input type="color" id="bgColorPicker" value="#ffffff" />
+  <button id="setBgBtn">Set Background</button>
+</div>
       
     </aside>
   </div>
@@ -90,6 +93,10 @@
   <div id="notice" class="notice"></div>
 
   <script>
+    document.getElementById('setBgBtn').onclick = () => {
+  const color = document.getElementById('bgColorPicker').value;
+  canvas.style.background = color;
+};
     function showGuide() {
       document.getElementById('guideBox').style.display = 'block';
       
