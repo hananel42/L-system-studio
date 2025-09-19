@@ -131,6 +131,9 @@
 				try {
 					const json = decodeURIComponent(escape(atob(encoded)));
 					params = JSON.parse(json);
+					const color = params.bg;
+					document.getElementById('bgColorPicker').value = color; 
+					canvas.style.background = color; 
 					update();
 					refreshEditor();
 					showNotice("Loaded shared configuration from URL.");
@@ -150,4 +153,5 @@
     </script>
 </body>
 </html>
+
 
