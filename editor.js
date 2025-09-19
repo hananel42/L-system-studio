@@ -65,6 +65,7 @@ document.getElementById('addSymBtn').onclick = () => {
     document.getElementById('newSym').value = '';
     document.getElementById('newSymValue').value = '';
     refreshEditor();
+	update();
 };
 
 // ---- Robust Save handler with fallbacks ----

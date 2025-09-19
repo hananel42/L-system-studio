@@ -47,43 +47,57 @@
                 <label>Iterations</label>
                 <input type="number" id="iterationsInput" />
             </div>
-            <div>
-                <label>Symbols</label>
-                <div id="symbols"></div>
-            </div>
-            <div>
-                <label>Add New Symbol</label>
-                <div class="new-symbol-row">
-                    <input id="newSym" placeholder="Symbol" maxlength="1" size="2" />
-                    <select id="newSymType">
-                        <option value="draw">Draw</option>
-                        <option value="turn">Turn</option>
-                        <option value="push">Push</option>
-                        <option value="pop">Pop</option>
-                    </select>
-                    <input id="newSymValue" placeholder="Value" size="2" />
-                    <input type="color" id="newSymColor" value="#000000" class="symInput" size="2" />
-                    <button id="addSymBtn">Add</button>
-                </div>
-            </div>
-            <div>
+			<div class="light-border">
+			<details>
+			    <summary>Symbols</summary>
+			    <div id="symbols"></div>
+				
+				<div>
+					<label>Add New Symbol</label>
+					<div class="new-symbol-row">
+						<input id="newSym" placeholder="Symbol" maxlength="1" size="2" />
+						<select id="newSymType">
+							<option value="draw">Draw</option>
+							<option value="turn">Turn</option>
+							<option value="push">Push</option>
+							<option value="pop">Pop</option>
+						</select>
+						<input id="newSymValue" placeholder="Value" size="2" />
+						<input type="color" id="newSymColor" value="#000000" class="symInput" size="2" />
+						<button id="addSymBtn">Add</button>
+					</div>
+					<label>Background Color  -  </label><input type="color" id="bgColorPicker" value="#ffffff" />
+				</div>
+
+			  
+			</details>
+			</div>
+
+            
+			<div>
                 <label>Generated String</label><br />
                 <textarea id="genString" readonly></textarea>
             </div>
-            <button id="saveBtn">Save</button>
-            <label for="loadInput" class="file-label">Load File</label>
-            <input type="file" id="loadInput" />
-            <button id="shareBtn">Share Link</button>
-            </br>
-            <div>
-
-                <select id="exampleSelect">
-                    <option value="">-- Select Example --</option>
-                </select>
-                <button id="animBtn">Open Animation</button>
-                </br>
-                <label>Background Color</label><input type="color" id="bgColorPicker" value="#ffffff" />
-            </div>
+			
+			</br>
+			
+			<select id="exampleSelect">
+                <option value="">-- Select Example --</option>
+            </select>
+			
+			</br></br>
+			
+			<div class="light-border">
+				<button id="saveBtn">Save</button>
+				<label for="loadInput" class="file-label">Load File</label>
+				<input type="file" id="loadInput" />
+				<button id="shareBtn">Share Link</button>
+				<button id="animBtn">Open Animation</button>
+				<button id="svgBtn">Export SVG</button>
+				<button id="pngBtn">Export PNG</button>
+			</div>
+            
+			
 
         </aside>
     </div>
@@ -93,6 +107,7 @@
     <script src="lsystem.js"></script>
 	<script src="ctx.js"></script>
 	<script src="editor.js"></script>
+	<script src="export.js"></script>
     <script>
         
         // ---- Helpers ----

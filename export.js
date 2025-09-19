@@ -87,3 +87,18 @@ function downloadSVG(segments, background = "#ffffff", filename = "drawing.svg")
   a.click();
   URL.revokeObjectURL(a.href);
 }
+
+const svgBtn = document.getElementById("svgBtn");
+    const pngBtn = document.getElementById("pngBtn");
+
+    svgBtn.addEventListener("click", () => {
+        const bg = document.getElementById("bgColorPicker").value;
+        const segments = shapeData.points || [];
+        downloadSVG(segments, bg, "lsystem.svg");
+    });
+
+    pngBtn.addEventListener("click", () => {
+        const bg = document.getElementById("bgColorPicker").value;
+        const segments = shapeData.points || [];
+        downloadPNG(segments, bg, "lsystem.png");
+    });

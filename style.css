@@ -105,3 +105,11 @@ textarea{
   z-index: 1000; 
 }
 #guideBox h2 { margin-top: 0; }
+details span {
+    all: unset;    
+    display: block;
+}
+.light-border {
+  border: 1px solid #ccc;
+  padding: 4px;
+}
