@@ -1,4 +1,4 @@
-document.getElementById('bgColorPicker').onchange = () => { const color = document.getElementById('bgColorPicker').value; canvas.style.background = color; };
+document.getElementById('bgColorPicker').onchange = () => { const color = document.getElementById('bgColorPicker').value; canvas.style.background = color; params.bg = color;};
 function showGuide() { document.getElementById('guideBox').style.display = 'block'; }
 function hideGuide() { document.getElementById('guideBox').style.display = 'none'; }
 document.getElementById('editorToggle').onclick = () => {

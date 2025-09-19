@@ -172,6 +172,7 @@
         try{
           const json=decodeURIComponent(escape(atob(encoded)));
           const params=JSON.parse(json);
+		  canvas.style.background = params.bg; 
           shapeData=genLSystem(params);
           animIndex=0;
           state={zoom:1,offsetX:0,offsetY:0};

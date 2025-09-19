@@ -54,7 +54,8 @@ let params = {
 		']': { type: 'pop' }
     },
     iterations: 5,
-	length: 6
+	length: 6,
+	bg : "#ffffff"
 };
 let shapeData = genLSystem(params);
 window.genLSystem = genLSystem;
