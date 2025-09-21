@@ -146,10 +146,11 @@
 			if (encoded) {
 				try {
 					const json = decodeURIComponent(escape(atob(encoded)));
-					params = {...params,...JSON.parse(json)};
-					const color = params.bg;
-					document.getElementById('bgColorPicker').value = color; 
-					canvas.style.background = color; 
+					params = {...JSON.parse(json),...params};
+					document.getElementById('bgColorPicker').value = params.bg; 
+					canvas.style.background = params.bg; 
+					document.getElementById('animType').value = params.animType;
+					document.getElementById('animSpeed').value = params.animSpeed; 					
 					update();
 					refreshEditor();
 					showNotice("Loaded shared configuration from URL.");
@@ -170,6 +171,5 @@
 	
 </body>
 </html>
-
 
 
