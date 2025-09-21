@@ -146,7 +146,7 @@
 			if (encoded) {
 				try {
 					const json = decodeURIComponent(escape(atob(encoded)));
-					params = {...JSON.parse(json),...params};
+					params = {...params,...JSON.parse(json)};
 					const color = params.bg;
 					document.getElementById('bgColorPicker').value = color; 
 					canvas.style.background = color; 
@@ -170,5 +170,6 @@
 	
 </body>
 </html>
+
 
 
