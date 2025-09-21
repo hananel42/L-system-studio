@@ -139,20 +139,23 @@
         window.update = function () {
             shapeData = genLSystem(params);
             document.getElementById('genString').value = shapeData.meta.text;
-			animI = 0;
+			animI=0;
         }
+		window.loadParams = function(newparams){
+			params = {...params,...newparams};
+			document.getElementById('bgColorPicker').value = params.bg; 
+			canvas.style.background = params.bg; 
+			document.getElementById('animType').value = params.animType;
+			document.getElementById('animSpeed').value = params.animSpeed; 					
+			update();
+		}
 		window.loadParamsFromURL = function () {
 			const urlParams = new URLSearchParams(location.search);
 			const encoded = urlParams.get("data");
 			if (encoded) {
 				try {
 					const json = decodeURIComponent(escape(atob(encoded)));
-					params = {...params,...JSON.parse(json)};
-					document.getElementById('bgColorPicker').value = params.bg; 
-					canvas.style.background = params.bg; 
-					document.getElementById('animType').value = params.animType;
-					document.getElementById('animSpeed').value = params.animSpeed; 					
-					update();
+					loadParams(JSON.parse(json));
 					refreshEditor();
 					showNotice("Loaded shared configuration from URL.");
 				} catch (e) {
@@ -166,13 +169,13 @@
             const json = JSON.stringify(params);
             return btoa(unescape(encodeURIComponent(json)));
         }
+		
 
         loadParamsFromURL();
     </script>
 	
 </body>
 </html>
-
 
 
 
