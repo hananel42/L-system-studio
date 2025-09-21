@@ -159,7 +159,7 @@ fetch('examples.json')
 document.getElementById('exampleSelect').onchange = () => {
     const idx = document.getElementById('exampleSelect').value;
     if (idx === "" || !examplesData) return;
-    params = JSON.parse(JSON.stringify(examplesData.examples[idx]));
+    loadParams(JSON.parse(JSON.stringify(examplesData.examples[idx])));
     update();
     refreshEditor();
     showNotice(`Loaded example: ${params.name}`);
@@ -183,4 +183,5 @@ document.getElementById("animSpeed").onchange = () => {
 };
 document.getElementById("animBtn").onclick = () => {
     animI = 0;
+
 };
