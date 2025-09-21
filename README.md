@@ -11,7 +11,7 @@ L-Systems are based on **recursive rules** that define how a string develops in 
 - Create custom L-Systems.
 - Real-time animation of plants and patterns.
 - Load pre-made examples (`examples.json`).
-- Clean and easy-to-use interface (`index.html` and `animation.html`).
+- Clean and easy-to-use interface (`index.html`).
 
    * The project is available at [L-System Studio](https://hananel42.github.io/L-system-studio/)
 
@@ -29,3 +29,4 @@ If you like this project, please give it a ⭐️!
 
 for more information about the project [L system wiki](https://github.com/hananel42/L-system-studio/wiki
 )
+
