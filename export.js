@@ -1,3 +1,4 @@
+function f(n){ return Number(n).toFixed(2); }
 // === Bounding Box ===
 function computeBBox(segments) {
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
@@ -67,10 +68,10 @@ function downloadSVG(segments, background = "#ffffff", filename = "drawing.svg")
 
   let paths = "";
   for (let seg of segments) {
-    const x1 = seg.x + offsetX;
-    const y1 = seg.y + offsetY;
-    const x2 = seg.nx + offsetX;
-    const y2 = seg.ny + offsetY;
+    const x1 = f(seg.x + offsetX);
+    const y1 = f(seg.y + offsetY);
+    const x2 = f(seg.nx + offsetX);
+    const y2 = f(seg.ny + offsetY);
     paths += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${seg.color || "#000"}" stroke-width="1"/>`;
   }
 
@@ -101,4 +102,5 @@ const svgBtn = document.getElementById("svgBtn");
         const bg = document.getElementById("bgColorPicker").value;
         const segments = shapeData.points || [];
         downloadPNG(segments, bg, "lsystem.png");
+
     });
