@@ -18,7 +18,7 @@ function render() {
 		let i = 0;
         for (const seg of shapeData.points) {
 			i++;
-			if (i>animI && params.animType!="none"){break;}
+			if (i>animI && params.animType!="none"){i=0;break;}
             ctx.beginPath();
             ctx.moveTo(seg.x, seg.y);
             ctx.lineTo(seg.nx, seg.ny);
@@ -26,9 +26,10 @@ function render() {
             ctx.lineWidth = Math.max(0.5 / state.zoom, 0.2);
             ctx.stroke();
         }
+		if (i==0) animI+=params.animSpeed;
+		
     }
     ctx.restore();
-	animI+=params.animSpeed;
     requestAnimationFrame(render);
 }
 render();
@@ -73,3 +74,4 @@ function getDist(touches) {
 
 window.ctx = ctx;
 window.render = render;
+
