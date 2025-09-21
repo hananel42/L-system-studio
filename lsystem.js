@@ -40,22 +40,25 @@ function genLSystem(params) {
         }
 
 // ---- State ----
-let params = {
-    axiom: 'X',
-    rules: [
-    { a: 'X', b: 'F+[[X]-X]-F[-FX]+X' },
-    { a: 'F', b: 'FF' }
-    ],
-    symbols: {
-        'F': { type: 'draw', color: '#0ea5e9', length: 6 },
-        '+': { type: 'turn', angle: 25 },
-        '-': { type: 'turn', angle: -25 },
-        '[': { type: 'push' },
-		']': { type: 'pop' }
-    },
-    iterations: 5,
-	length: 6,
-	bg : "#ffffff"
+window.params = {
+			axiom: 'X',
+			rules: [
+			{ a: 'X', b: 'F+[[X]-X]-F[-FX]+X' },
+			{ a: 'F', b: 'FF' }
+			],
+			symbols: {
+				'F': { type: 'draw', color: '#0ea5e9', length: 6 },
+				'+': { type: 'turn', angle: 25 },
+				'-': { type: 'turn', angle: -25 },
+				'[': { type: 'push' },
+				']': { type: 'pop' }
+			},
+			iterations: 5,
+			length: 6,
+			bg : "#ffffff",
+			animType : "none",
+			animSpeed : 5,
 };
-let shapeData = genLSystem(params);
+		
+window.shapeData = genLSystem(params);
 window.genLSystem = genLSystem;

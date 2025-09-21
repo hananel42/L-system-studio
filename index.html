@@ -91,12 +91,27 @@
 				<button id="saveBtn">Save JSON</button>
 				<label for="loadInput" class="file-label">Load JSON</label>
 				<input type="file" id="loadInput" />
-				<button id="shareBtn">Share Link</button>
-				<button id="animBtn">Open Animation</button>
 				<button id="svgBtn">Export SVG</button>
 				<button id="pngBtn">Export PNG</button>
+				<button id="shareBtn">Share Link</button>
 			</div>
             
+			
+			</br>
+			<div class="light-border">
+			<details>
+			    <summary>Aimation</summary>
+				</br>
+				<select id="animType">
+					<option value="none">off</option>
+					<option value="steps">Step by step</option>
+					<option value="tree">coming soon . . .</option>
+				</select>
+				</br></br>
+			    <label>Speed : </label><input id="animSpeed" placeholder="speed" size="2" type="number" value="5" />
+				<button id="animBtn">Restart</button>
+			</details>
+			</div>
 			
 
         </aside>
@@ -110,6 +125,7 @@
 	<script src="export.js"></script>
     <script>
         
+		
         // ---- Helpers ----
         window.showNotice = function (msg, timeout = 3000) {
             const n = document.getElementById('notice');
@@ -130,7 +146,7 @@
 			if (encoded) {
 				try {
 					const json = decodeURIComponent(escape(atob(encoded)));
-					params = JSON.parse(json);
+					params = {...JSON.parse(json),...params};
 					const color = params.bg;
 					document.getElementById('bgColorPicker').value = color; 
 					canvas.style.background = color; 
@@ -151,6 +167,7 @@
 
         loadParamsFromURL();
     </script>
+	
 </body>
 </html>
 

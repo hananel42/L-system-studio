@@ -164,15 +164,23 @@ document.getElementById('exampleSelect').onchange = () => {
     refreshEditor();
     showNotice(`Loaded example: ${params.name}`);
 };
-document.getElementById("animBtn").onclick = () => {
-    const encoded = paramsToURL(params);
-    const url = `${location.origin}${location.pathname.replace("index.html", "")}animation.html?data=${encoded}`;
-    location.href = url;
-};
+
 document.getElementById("shareBtn").onclick = () => {
     const encoded = paramsToURL(params);
     const url = `${location.origin}${location.pathname}?data=${encoded}`;
     navigator.clipboard.writeText(url).then(() => {
         showNotice("Share link copied to clipboard!");
     });
+};
+document.getElementById("animType").onchange = () => {
+    params.animType=document.getElementById("animType").value;
+	animI = 0;
+};
+
+document.getElementById("animSpeed").onchange = () => {
+    params.animSpeed=parseFloat(document.getElementById("animSpeed").value);
+	animI = 0;
+};
+document.getElementById("animBtn").onclick = () => {
+    animI = 0;
 };

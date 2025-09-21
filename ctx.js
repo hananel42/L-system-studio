@@ -2,8 +2,9 @@ const canvas = document.getElementById('canvas');
 
 const ctx = canvas.getContext('2d');
 const state = { zoom: 1, offsetX: 0, offsetY: 0 };
-
+window.animI = 0;
 function render() {
+	
     canvas.width = canvas.clientWidth * devicePixelRatio;
     canvas.height = canvas.clientHeight * devicePixelRatio;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -14,7 +15,10 @@ function render() {
     ctx.scale(state.zoom, state.zoom);
 
     if (shapeData && shapeData.points) {
+		let i = 0;
         for (const seg of shapeData.points) {
+			i++;
+			if (i>animI && params.animType!="none"){break;}
             ctx.beginPath();
             ctx.moveTo(seg.x, seg.y);
             ctx.lineTo(seg.nx, seg.ny);
@@ -24,6 +28,7 @@ function render() {
         }
     }
     ctx.restore();
+	animI+=params.animSpeed;
     requestAnimationFrame(render);
 }
 render();
