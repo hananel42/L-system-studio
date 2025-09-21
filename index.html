@@ -139,6 +139,7 @@
         window.update = function () {
             shapeData = genLSystem(params);
             document.getElementById('genString').value = shapeData.meta.text;
+			animI = 0;
         }
 		window.loadParamsFromURL = function () {
 			const urlParams = new URLSearchParams(location.search);
@@ -171,6 +172,7 @@
 	
 </body>
 </html>
+
 
 
 
