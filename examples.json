@@ -60,19 +60,7 @@
       },
       "iterations": 10
     },
-    {
-      "name": "Simple Spiral",
-      "axiom": "F",
-      "rules": [
-        {"a": "F", "b": "F+F-F"}
-      ],
-      "symbols": {
-        "F": {"type": "draw", "color": "#ffa500", "length": 5},
-        "+": {"type": "turn", "angle": 60},
-        "-": {"type": "turn", "angle": -60}
-      },
-      "iterations": 6
-    },
+   
     {
       "name": "Hilbert Curve",
       "axiom": "A",
@@ -115,19 +103,6 @@
       "iterations": 7
     },
     {
-      "name": "Cantor Set",
-      "axiom": "F",
-      "rules": [
-        {"a": "F", "b": "F+F-F"}
-      ],
-      "symbols": {
-        "F": {"type": "draw", "color": "#8b4513", "length": 12},
-        "+": {"type": "turn", "angle": 0},
-        "-": {"type": "turn", "angle": 0}
-      },
-      "iterations": 6
-    },
-    {
       "name": "Quadratic Koch Island",
       "axiom": "F+F+F+F",
       "rules": [
@@ -157,23 +132,7 @@
       },
       "iterations": 5
     },
-    {
-      "name": "Fractal Bush",
-      "axiom": "X",
-      "rules": [
-        {"a": "X", "b": "F-[[X]+X]+F[+FX]-X"},
-        {"a": "F", "b": "FF"}
-      ],
-      "symbols": {
-        "F": {"type": "draw", "color": "#228b22", "length": 4},
-        "X": {"type": "draw", "color": "#228b22", "length": 0},
-        "+": {"type": "turn", "angle": 20},
-        "-": {"type": "turn", "angle": -20},
-        "[": {"type": "push"},
-        "]": {"type": "pop"}
-      },
-      "iterations": 6
-    },
+    
     {
       "name": "Fractal Vine",
       "axiom": "F",
@@ -200,19 +159,7 @@
       },
       "iterations": 3
     },
-    {
-      "name": "Triadic Koch Curve",
-      "axiom": "F",
-      "rules": [
-        {"a": "F", "b": "F+F-F"}
-      ],
-      "symbols": {
-        "F": {"type": "draw", "color": "#ff6347", "length": 6},
-        "+": {"type": "turn", "angle": 60},
-        "-": {"type": "turn", "angle": -60}
-      },
-      "iterations": 4
-    },
+  
     {
       "name": "Hilbert Variant",
       "axiom": "A",
@@ -242,19 +189,7 @@
       },
       "iterations": 6
     },
-    {
-      "name": "Cross Fractal",
-      "axiom": "F+F+F+F",
-      "rules": [
-        {"a": "F", "b": "F+F-F-F+F"}
-      ],
-      "symbols": {
-        "F": {"type": "draw", "color": "#1e90ff", "length": 4},
-        "+": {"type": "turn", "angle": 90},
-        "-": {"type": "turn", "angle": -90}
-      },
-      "iterations": 4
-    },
+
     {
       "name": "Zigzag Curve",
       "axiom": "F",
@@ -267,22 +202,7 @@
         "-": {"type": "turn", "angle": -90}
       },
       "iterations": 3
-    },
-    {
-      "name": "Golden Dragon",
-      "axiom": "FX",
-      "rules": [
-        {"a": "X", "b": "X+YF+"},
-        {"a": "Y", "b": "-FX-Y"}
-      ],
-      "symbols": {
-        "F": {"type": "draw", "color": "#ffd700", "length": 8},
-        "X": {"type": "draw", "color": "#ffd700", "length": 0},
-        "Y": {"type": "draw", "color": "#ffd700", "length": 0},
-        "+": {"type": "turn", "angle": 90},
-        "-": {"type": "turn", "angle": -90}
-      },
-      "iterations": 10
     }
   ]
-        }
+}
+
