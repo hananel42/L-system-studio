@@ -126,7 +126,7 @@ document.getElementById('loadInput').onchange = e => {
     reader.onload = ev => {
         try {
             const parsed = JSON.parse(ev.target.result);
-            params = parsed;
+            params = {...params,...parsed};
             update();
             refreshEditor();
             showNotice('Loaded configuration.');
@@ -185,3 +185,4 @@ document.getElementById("animBtn").onclick = () => {
     animI = 0;
 
 };
+
