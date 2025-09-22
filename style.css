@@ -19,6 +19,7 @@ canvas {
   display: block; 
   touch-action: none;
   background: #fff;
+  cursor: crosshair;
 }
 #loadInput { display: none; }
 .file-label { 
@@ -113,3 +114,4 @@ details span {
   border: 1px solid #ccc;
   padding: 4px;
 }
+
