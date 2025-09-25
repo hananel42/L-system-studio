@@ -40,7 +40,7 @@ button {
   background: #fff; 
   cursor: pointer; 
 } 
-sBtn { 
+.sBtn { 
   font-size: 16px; 
   margin: 4px; 
   border: 1px solid #ccc;
@@ -124,6 +124,7 @@ details span {
   border: 1px solid #ccc;
   padding: 4px;
 }
+
 
 
 
