@@ -43,15 +43,18 @@
                 <label>Axiom</label>
                 <input id="axiomInput" />
             </div>
-            <div>
+			</br>
+            <div class="light-border">
                 <label>Rules</label>
                 <div id="rules"></div>
                 <button id="addRuleBtn">+ Add Rule</button>
             </div>
+			</br>
             <div>
                 <label>Iterations</label>
                 <input type="number" id="iterationsInput" />
             </div>
+			</br>
 			<div class="light-border">
 			<details>
 			    <summary>Symbols</summary>
@@ -117,7 +120,17 @@
 				<button id="animBtn">Restart</button>
 			</details>
 			</div>
-			
+			</br>
+			</br>
+			<div class="light-border">
+			<details>
+			    <summary>local storage</summary>
+				</br>
+				<div id="localStorage"  class="light-border" style="height:100px; overflow-y:auto; padding-right:4px;"></div>
+				</br>
+				<input id="saveInp" placeholder="name"/><button id="saveLocal">Save</button>
+			</details>
+			</div>
 
         </aside>
     </div>
@@ -128,6 +141,7 @@
 	<script src="ctx.js"></script>
 	<script src="editor.js"></script>
 	<script src="export.js"></script>
+	<script src="localStorage.js"></script>
     <script>
         
 		
