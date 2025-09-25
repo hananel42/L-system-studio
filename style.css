@@ -41,8 +41,10 @@ button {
   cursor: pointer; 
 } 
 .sBtn { 
-  font-size: 16px; 
+  all:unset;
+  padding: 3px 5px;
   margin: 4px; 
+  font-size: 16px; 
   border: 1px solid #ccc;
   border-radius: 4px; 
   background: #fff; 
@@ -124,6 +126,7 @@ details span {
   border: 1px solid #ccc;
   padding: 4px;
 }
+
 
 
 
