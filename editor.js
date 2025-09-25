@@ -17,7 +17,7 @@ function refreshEditor() {
     params.rules.forEach((r, idx) => {
         const row = document.createElement('div');
         row.className = 'rule-row';
-        row.innerHTML = `<input class="ra" value="${r.a}" size="1"/> → <input class="rb" value="${r.b}"/> <button>✕</button>`;
+        row.innerHTML = `<input class="ra" value="${r.a}" size="1"/> → <input class="rb" value="${r.b}"/> <button class="sBtn">✕</button>`;
         row.querySelector('.ra').oninput = e => { r.a = e.target.value; update(); };
         row.querySelector('.rb').oninput = e => { r.b = e.target.value; update(); };
         row.querySelector('button').onclick = () => { params.rules.splice(idx, 1); update(); refreshEditor(); };
@@ -35,7 +35,7 @@ function refreshEditor() {
               <option value="pop">Pop</option></select>`;
         if (action.type === 'draw') inner += `<input class="slen" value="${action.length || ''}" size="4"/> <input type="color" class="scol" value="${action.color || '#000'}"/>`;
         if (action.type === 'turn') inner += `<input class="sang" value="${action.angle || ''}" size="4"/>`;
-        inner += ` <button>✕</button>`;
+        inner += ` <button class="sBtn">✕</button>`;
         row.innerHTML = inner;
         row.querySelector('.stype').value = action.type;
         row.querySelector('.stype').onchange = e => { action.type = e.target.value; update(); refreshEditor(); };
@@ -185,6 +185,7 @@ document.getElementById("animBtn").onclick = () => {
     animI = 0;
 
 };
+
 
 
 
