@@ -33,7 +33,15 @@ canvas {
 } 
 button { 
   font-size: 16px; 
-  padding: 3px 5px;
+  padding: 6px 10px;
+  margin: 4px; 
+  border: 1px solid #ccc;
+  border-radius: 4px; 
+  background: #fff; 
+  cursor: pointer; 
+} 
+sBtn { 
+  font-size: 16px; 
   margin: 4px; 
   border: 1px solid #ccc;
   border-radius: 4px; 
@@ -116,6 +124,7 @@ details span {
   border: 1px solid #ccc;
   padding: 4px;
 }
+
 
 
 
