@@ -29,6 +29,7 @@
         console.log("Loaded L-system:", data);
         showNotice("Loaded L-system: " + shortKey);
         loadParams(data);
+		update();
       };
 
       const delBtn = document.createElement("button");
@@ -57,3 +58,4 @@
 
  
   renderList();
+
