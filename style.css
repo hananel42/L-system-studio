@@ -45,7 +45,7 @@ aside {
   top: 0;
   right: 0;
   width: 300px;
-  height: 100vh;  
+  max-height: 100vh;  
   background: #fff;
   border-left: 2px solid #ccc;
   overflow: auto;
@@ -114,5 +114,6 @@ details span {
   border: 1px solid #ccc;
   padding: 4px;
 }
+
 
 
