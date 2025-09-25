@@ -105,7 +105,7 @@
 				<select id="animType">
 					<option value="none">off</option>
 					<option value="steps">Step by step</option>
-					<option value="tree">coming soon . . .</option>
+					<option value="tree">Tree</option>
 				</select>
 				</br></br>
 			    <label>Speed : </label><input id="animSpeed" placeholder="speed" size="2" type="number" value="5" />
@@ -138,6 +138,7 @@
 
         window.update = function () {
             shapeData = genLSystem(params);
+			if (params.animType=="tree"){ shapeData.tree = buildLSystemTree(params);}
             document.getElementById('genString').value = shapeData.meta.text;
 			animI=0;
         }

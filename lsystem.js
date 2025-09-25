@@ -60,5 +60,48 @@ window.params = {
 			animSpeed : 5,
 };
 		
+window.buildLSystemTree = function (params) {
+  // --- שלב 1: הפעלת החוקים ליצירת מחרוזת סופית ---
+  let rules = params.rules;
+  const ruleMap = {};
+  rules.forEach(r => ruleMap[r.a] = r.b);
+
+  let str = params.axiom;
+  for (let i = 0; i < params.iterations; i++) {
+    let next = "";
+    for (const ch of str) {
+      next += ruleMap[ch] || ch;
+    }
+    str = next;
+  }
+
+  // --- שלב 2: הפיכת המחרוזת לעץ פעולות ---
+  let i = 0;
+  function parseSeq() {
+    const seq = [];
+    while (i < str.length) {
+      const ch = str[i++];
+      const action = params.symbols[ch];
+      if (!action) continue;
+
+      if (action.type === "pop") {
+        // סוגר ענף
+        break;
+      } 
+      else if (action.type === "push") {
+        // פותח ענף
+        seq.push({ type: "branch", children: parseSeq() });
+      } 
+      else {
+        // פעולה רגילה
+        seq.push({ type: action.type, sym: ch, ...action });
+      }
+    }
+    return seq;
+  }
+
+  return parseSeq();
+}
+
 window.shapeData = genLSystem(params);
 window.genLSystem = genLSystem;

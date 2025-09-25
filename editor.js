@@ -174,7 +174,7 @@ document.getElementById("shareBtn").onclick = () => {
 };
 document.getElementById("animType").onchange = () => {
     params.animType=document.getElementById("animType").value;
-	animI = 0;
+	update();
 };
 
 document.getElementById("animSpeed").onchange = () => {
