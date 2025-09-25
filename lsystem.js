@@ -1,16 +1,21 @@
+function genStrLsystem(params){
+    let str = params.axiom;
+	const ruleMap = {};
+	params.rules.forEach(r => ruleMap[r.a] = r.b);
+
+	for (let i = 0; i < params.iterations; i++) {
+        let next = '';
+        for (const ch of str) next += ruleMap[ch] || ch;
+        str = next;
+        if (str.length > 200000){showNotice("String too long – expansion stopped to avoid crash."); break;}
+    }
+	return str;
+}
 // ---- L-System Generator ----
 function genLSystem(params) {
             let { axiom, rules, symbols, length, iterations } = params;
-            let str = axiom;
-            const ruleMap = {};
-            rules.forEach(r => ruleMap[r.a] = r.b);
-
-            for (let i = 0; i < iterations; i++) {
-                let next = '';
-                for (const ch of str) next += ruleMap[ch] || ch;
-                str = next;
-                if (str.length > 200000) break;
-            }
+            let str = genStrLsystem(params);
+            
 
             let x = 0, y = 0, dir = -Math.PI / 2;
             const stack = [];
@@ -62,18 +67,7 @@ window.params = {
 		
 window.buildLSystemTree = function (params) {
   // --- שלב 1: הפעלת החוקים ליצירת מחרוזת סופית ---
-  let rules = params.rules;
-  const ruleMap = {};
-  rules.forEach(r => ruleMap[r.a] = r.b);
-
-  let str = params.axiom;
-  for (let i = 0; i < params.iterations; i++) {
-    let next = "";
-    for (const ch of str) {
-      next += ruleMap[ch] || ch;
-    }
-    str = next;
-  }
+  let str = genStrLsystem(params);
 
   // --- שלב 2: הפיכת המחרוזת לעץ פעולות ---
   let i = 0;
