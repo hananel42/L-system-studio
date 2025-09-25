@@ -17,7 +17,7 @@ function refreshEditor() {
     params.rules.forEach((r, idx) => {
         const row = document.createElement('div');
         row.className = 'rule-row';
-        row.innerHTML = `<input class="ra" value="${r.a}" size="2"/> → <input class="rb" value="${r.b}"/> <button>✕</button>`;
+        row.innerHTML = `<input class="ra" value="${r.a}" size="1"/> → <input class="rb" value="${r.b}"/> <button>✕</button>`;
         row.querySelector('.ra').oninput = e => { r.a = e.target.value; update(); };
         row.querySelector('.rb').oninput = e => { r.b = e.target.value; update(); };
         row.querySelector('button').onclick = () => { params.rules.splice(idx, 1); update(); refreshEditor(); };
@@ -185,5 +185,6 @@ document.getElementById("animBtn").onclick = () => {
     animI = 0;
 
 };
+
 
 
