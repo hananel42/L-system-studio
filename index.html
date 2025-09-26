@@ -165,7 +165,9 @@
 			canvas.style.background = params.bg; 
 			document.getElementById('animType').value = params.animType;
 			document.getElementById('animSpeed').value = params.animSpeed; 					
+			refreshEditor();
 			update();
+			
 		}
 		window.loadParamsFromURL = function () {
 			const urlParams = new URLSearchParams(location.search);
@@ -194,6 +196,7 @@
 	
 </body>
 </html>
+
 
 
 
