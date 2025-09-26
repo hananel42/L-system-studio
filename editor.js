@@ -8,7 +8,7 @@ document.getElementById('editorToggle').onclick = () => {
     refreshEditor();
 };
 
-function refreshEditor() {
+window.refreshEditor = function () {
     document.getElementById('axiomInput').value = params.axiom;
     document.getElementById('iterationsInput').value = params.iterations;
     document.getElementById('genString').value = shapeData.meta.text;
@@ -185,6 +185,7 @@ document.getElementById("animBtn").onclick = () => {
     animI = 0;
 
 };
+
 
 
 
