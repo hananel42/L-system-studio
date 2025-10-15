@@ -72,12 +72,12 @@ function render() {
 			}
 		}
 	}
-	else{
+	else if(animType == "steps"){
 		if (shapeData && shapeData.points) {
 			let i = 0;
 			for (const seg of shapeData.points) {
 				i++;
-				if (i>animI && params.animType!="none"){i=0;break;}
+				if (i>animI){i=0;break;}
 				ctx.beginPath();
 				ctx.moveTo(seg.x, seg.y);
 				ctx.lineTo(seg.nx, seg.ny);
@@ -88,7 +88,27 @@ function render() {
 			if (i==0) animI+=params.animSpeed;
 			
 		}
-	}
+else {
+    if (shapeData && shapeData.points) {
+        // אובייקט לשמירת Path2D לפי צבע
+        const paths = {};
+
+        for (const seg of shapeData.points) { // תקן פה מ-points ל-shapeData.points
+            const color = seg.color || "#000";
+            if (!paths[color]) paths[color] = new Path2D();
+            paths[color].moveTo(seg.x, seg.y);
+            paths[color].lineTo(seg.nx, seg.ny);
+        }
+
+        // ציור כל Path2D עם הצבע שלו
+        for (const color in paths) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = Math.max(0.5 / state.zoom, 0.2);
+            ctx.stroke(paths[color]);
+        }
+    }
+}
+
     ctx.restore();
     requestAnimationFrame(render);
 }
@@ -134,4 +154,5 @@ function getDist(touches) {
 
 window.ctx = ctx;
 window.render = render;
+
 
