@@ -88,6 +88,7 @@ function render() {
 			if (i==0) animI+=params.animSpeed;
 			
 		}
+	}
 else {
     if (shapeData && shapeData.points) {
         // אובייקט לשמירת Path2D לפי צבע
@@ -154,5 +155,6 @@ function getDist(touches) {
 
 window.ctx = ctx;
 window.render = render;
+
 
 
