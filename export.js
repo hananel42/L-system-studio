@@ -62,17 +62,29 @@ function downloadPNG(segments, background = "#ffffff", filename = "drawing.png")
 function downloadSVG(segments, background = "#ffffff", filename = "drawing.svg") {
   const bbox = computeBBox(segments);
   const side = Math.max(bbox.w, bbox.h);
-
   const offsetX = (side - bbox.w) / 2 - bbox.minX;
   const offsetY = (side - bbox.h) / 2 - bbox.minY;
 
-  let paths = "";
+  // קיבוץ קווים לפי צבע
+  const colorGroups = {};
   for (let seg of segments) {
-    const x1 = f(seg.x + offsetX);
-    const y1 = f(seg.y + offsetY);
-    const x2 = f(seg.nx + offsetX);
-    const y2 = f(seg.ny + offsetY);
-    paths += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${seg.color || "#000"}" stroke-width="1"/>`;
+    const color = seg.color || "#000";
+    if (!colorGroups[color]) colorGroups[color] = [];
+    colorGroups[color].push(seg);
+  }
+
+  // בניית paths לכל צבע
+  let paths = "";
+  for (let color in colorGroups) {
+    let d = "";
+    for (let seg of colorGroups[color]) {
+      const x1 = f(seg.x + offsetX);
+      const y1 = f(seg.y + offsetY);
+      const x2 = f(seg.nx + offsetX);
+      const y2 = f(seg.ny + offsetY);
+      d += `M${x1} ${y1} L${x2} ${y2} `;
+    }
+    paths += `<path d="${d.trim()}" stroke="${color}" stroke-width="1" fill="none"/>`;
   }
 
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
@@ -88,7 +100,6 @@ function downloadSVG(segments, background = "#ffffff", filename = "drawing.svg")
   a.click();
   URL.revokeObjectURL(a.href);
 }
-
 const svgBtn = document.getElementById("svgBtn");
     const pngBtn = document.getElementById("pngBtn");
 
