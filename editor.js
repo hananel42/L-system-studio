@@ -186,6 +186,10 @@ document.getElementById("animBtn").onclick = () => {
 
 };
 
+document.getElementById("maxLen").onchange = () => {
+    maxLen=parseFloat(document.getElementById("maxLen").value) || 200000;
+	update();
+};
 
 
 

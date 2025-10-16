@@ -83,7 +83,7 @@
 
 		</br>
 			<div>
-                <label>Generated String</label><br />
+                <label id="lenStr">Generated String</label><br />
                 <textarea id="genString" readonly></textarea>
             </div>
 			
@@ -129,6 +129,15 @@
 				<input id="saveInp" placeholder="name"/><button id="saveLocal">Save</button>
 			</details>
 			</div>
+			</br>
+			<div class="light-border">
+			<details>
+			    <summary>settings</summary>
+				<input id="maxLen" placeholder="Value" value="200000"> max length : </input>
+				
+			</details>
+			
+			</div>
 		</br></br>
         </aside>
     </div>
@@ -144,6 +153,7 @@
         
 		
         // ---- Helpers ----
+		window.maxLen = 200000;
         window.showNotice = function (msg, timeout = 3000) {
             const n = document.getElementById('notice');
             n.textContent = msg;
@@ -157,6 +167,7 @@
             shapeData = genLSystem(params);
 			if (params.animType=="tree"){ shapeData.tree = buildLSystemTree(params);}
             document.getElementById('genString').value = shapeData.meta.text;
+			document.getElementById('lenStr').textContent = `Generated String (length: ${shapeData.meta.text.length})`;
 			animI=0;
         }
 		window.loadParams = function(newparams){
@@ -192,6 +203,7 @@
 		
 
         loadParamsFromURL();
+		update();
     </script>
 	
 </body>
