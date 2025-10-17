@@ -139,7 +139,7 @@ document.getElementById('loadInput').onchange = e => {
 };
 let examplesData = null;
 
-fetch('examples.json')
+fetch('assets/json/examples.json')
     .then(response => response.json())
     .then(data => {
         examplesData = data;
@@ -190,6 +190,7 @@ document.getElementById("maxLen").onchange = () => {
     maxLen=parseFloat(document.getElementById("maxLen").value) || 200000;
 	update();
 };
+
 
 
 
