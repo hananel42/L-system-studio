@@ -29,6 +29,9 @@ If you like this project, please give it a ⭐️!
 
 for more information about the project [L system wiki](https://github.com/hananel42/L-system-studio/wiki)
 ---
+![screenshot](icon/screenshot.png)
+
+---
 ```
 L-system-studio/
 ├── README.md
@@ -52,9 +55,11 @@ L-system-studio/
 │   ├── favicon-32x32.png
 │   ├── favicon.ico
 │   ├── icon.png
+│   ├── screenshot.png
 │   └── site.webmanifest
 └── index.html
 ```
 ---
+
 
 
