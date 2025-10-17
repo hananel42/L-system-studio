@@ -72,7 +72,7 @@ function render() {
 			}
 		}
 	}
-	else if (params.animType=="step"){
+	else if (params.animType=="steps"){
 		if (shapeData && shapeData.points) {
 			let i = 0;
 			for (const seg of shapeData.points) {
@@ -150,4 +150,5 @@ function getDist(touches) {
 
 window.ctx = ctx;
 window.render = render;
+
 
