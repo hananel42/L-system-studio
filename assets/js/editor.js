@@ -122,6 +122,7 @@ document.getElementById('saveBtn').onclick = () => {
 document.getElementById('loadInput').onchange = e => {
     const file = e.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = ev => {
         try {
@@ -133,10 +134,14 @@ document.getElementById('loadInput').onchange = e => {
         } catch (err) {
             showNotice('Invalid JSON file.');
             console.error(err);
+        } finally {
+            e.target.value = '';
         }
     };
+
     reader.readAsText(file);
 };
+
 let examplesData = null;
 
 fetch('assets/json/examples.json')
@@ -203,6 +208,7 @@ document.getElementById("maxLen").onchange = () => {
     maxLen=parseFloat(document.getElementById("maxLen").value) || 200000;
 	update();
 };
+
 
 
 
