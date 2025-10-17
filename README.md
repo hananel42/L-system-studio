@@ -27,6 +27,34 @@ The code is open for free use, with mandatory source attribution:
 **L-System Studio** – Free creation, fast learning, and enjoyment of L-Systems.
 If you like this project, please give it a ⭐️!
 
-for more information about the project [L system wiki](https://github.com/hananel42/L-system-studio/wiki
-)
+for more information about the project [L system wiki](https://github.com/hananel42/L-system-studio/wiki)
+---
+```
+L-system-studio/
+├── README.md
+├── assets/
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   │   ├── ctx.js
+│   │   ├── editor.js
+│   │   ├── export.js
+│   │   ├── localStorage.js
+│   │   ├── lsystem.js
+│   │   └── service-worker.js
+│   └── json/
+│       └── examples.json
+├── icon/
+│   ├── android-chrome-192x192.png
+│   ├── android-chrome-512x512.png
+│   ├── apple-touch-icon.png
+│   ├── favicon-16x16.png
+│   ├── favicon-32x32.png
+│   ├── favicon.ico
+│   ├── icon.png
+│   └── site.webmanifest
+└── index.html
+```
+---
+
 
