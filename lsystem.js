@@ -7,7 +7,7 @@ function genStrLsystem(params){
         let next = '';
         for (const ch of str) next += ruleMap[ch] || ch;
         str = next;
-        if (str.length > 200000){showNotice("String too long – expansion stopped to avoid crash."); break;}
+        if (str.length > maxLen){showNotice("String too long – expansion stopped to avoid crash."); break;}
     }
 	return str;
 }
@@ -99,3 +99,4 @@ window.buildLSystemTree = function (params) {
 
 window.shapeData = genLSystem(params);
 window.genLSystem = genLSystem;
+
