@@ -183,7 +183,7 @@ document.getElementById("shareBtn").onclick = () => {
 	const url = `${location.origin}${location.pathname}?data=${encoded}`;
     navigator.share({
       title: document.title,
-      text: 'Check out my amazing L-system creation!',
+      text: 'Check out my amazing L-system creation!\n',
       url: url
     })
   } else {
@@ -208,6 +208,7 @@ document.getElementById("maxLen").onchange = () => {
     maxLen=parseFloat(document.getElementById("maxLen").value) || 200000;
 	update();
 };
+
 
 
 
