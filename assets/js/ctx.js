@@ -9,7 +9,6 @@ function drawTreeParallel(ctx, canvas, tree,maxIndex) {
 
   let steps = 0;
 
-  // אם לא נשלח תור מבחוץ – מתחילים חדש
   active = [{ seq: tree, i: 0, x: 0, y: 0, dir: -Math.PI/2 }];
 
   while (steps < maxIndex && active.length > 0) {
@@ -51,7 +50,6 @@ function drawTreeParallel(ctx, canvas, tree,maxIndex) {
 
   ctx.restore();
 
-  // מחזיר גם את התור וגם אינדיקציה אם הכל נגמר
   return {done: active.length === 0 };
 }
 
@@ -150,5 +148,6 @@ function getDist(touches) {
 
 window.ctx = ctx;
 window.render = render;
+
 
 
