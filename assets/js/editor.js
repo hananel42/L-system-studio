@@ -165,12 +165,25 @@ document.getElementById('exampleSelect').onchange = () => {
     showNotice(`Loaded example: ${params.name}`);
 };
 
-document.getElementById("shareBtn").onclick = () => {
+document.getElementById("copyBtn").onclick = () => {
     const encoded = paramsToURL(params);
     const url = `${location.origin}${location.pathname}?data=${encoded}`;
     navigator.clipboard.writeText(url).then(() => {
         showNotice("Share link copied to clipboard!");
     });
+};
+document.getElementById("shareBtn").onclick = () => {
+	if (navigator.share) {
+	const encoded = paramsToURL(params);
+	const url = `${location.origin}${location.pathname}?data=${encoded}`;
+    navigator.share({
+      title: document.title,
+      text: 'Check out my amazing L-system creation!',
+      url: url
+    })
+  } else {
+    showNotice('Your browser does not support direct sharing.');
+  }
 };
 document.getElementById("animType").onchange = () => {
     params.animType=document.getElementById("animType").value;
@@ -190,7 +203,6 @@ document.getElementById("maxLen").onchange = () => {
     maxLen=parseFloat(document.getElementById("maxLen").value) || 200000;
 	update();
 };
-
 
 
 
