@@ -113,50 +113,39 @@ document.getElementById('resetBtn').onclick = () => { state.zoom = 1; state.offs
 let isPanning = false;
 let last = { x: 0, y: 0 };
 
-function getCanvasCoords(e) {
-  const rect = canvas.getBoundingClientRect();
-  return {
-    x: e.clientX - rect.left,
-    y: e.clientY - rect.top
-  };
-}
-
 canvas.addEventListener('mousedown', e => {
   isPanning = true;
-  const pos = getCanvasCoords(e);
-  last = pos;
+  last = { x: e.clientX, y: e.clientY };
 });
 
 canvas.addEventListener('mousemove', e => {
   if (isPanning) {
-    const pos = getCanvasCoords(e);
-    state.offsetX += pos.x - last.x;
-    state.offsetY += pos.y - last.y;
-    last = pos;
+    state.offsetX += e.clientX - last.x;
+    state.offsetY += e.clientY - last.y;
+    last = { x: e.clientX, y: e.clientY };
   }
 });
 
 canvas.addEventListener('mouseup', () => isPanning = false);
 canvas.addEventListener('mouseleave', () => isPanning = false);
 
-// ✅ zoom עם pivot מדויק לפי הסמן
 canvas.addEventListener('wheel', e => {
   e.preventDefault();
+
   const rect = canvas.getBoundingClientRect();
   const mouseX = e.clientX - rect.left;
   const mouseY = e.clientY - rect.top;
+
   const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
-
-  const xBefore = (mouseX - state.offsetX) / state.zoom;
-  const yBefore = (mouseY - state.offsetY) / state.zoom;
-
+  const prevZoom = state.zoom;
   state.zoom *= zoomFactor;
 
-  state.offsetX = mouseX - xBefore * state.zoom;
-  state.offsetY = mouseY - yBefore * state.zoom;
+  // פיצוי מדויק
+  state.offsetX -= (mouseX - state.offsetX) * (state.zoom / prevZoom - 1);
+  state.offsetY -= (mouseY - state.offsetY) * (state.zoom / prevZoom - 1);
 }, { passive: false });
 
-// ✅ touch gestures (כולל פיצוי למיקום ה-canvas)
+// TOUCH
 let lastDist = null;
 let lastCenter = null;
 
@@ -167,35 +156,37 @@ canvas.addEventListener('touchstart', e => {
     lastCenter = getCenter(e.touches, rect);
   } else if (e.touches.length === 1) {
     isPanning = true;
-    const t = e.touches[0];
-    last = { x: t.clientX - rect.left, y: t.clientY - rect.top };
+    last = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   }
   e.preventDefault();
 }, { passive: false });
 
 canvas.addEventListener('touchmove', e => {
   const rect = canvas.getBoundingClientRect();
+
   if (e.touches.length === 2 && lastDist && lastCenter) {
-    const newD = getDist(e.touches);
+    const newDist = getDist(e.touches);
     const newCenter = getCenter(e.touches, rect);
-    const zoomFactor = newD / lastDist;
-
-    const xBefore = (lastCenter.x - state.offsetX) / state.zoom;
-    const yBefore = (lastCenter.y - state.offsetY) / state.zoom;
-
+    const zoomFactor = newDist / lastDist;
+    const prevZoom = state.zoom;
     state.zoom *= zoomFactor;
-    state.offsetX = newCenter.x - xBefore * state.zoom;
-    state.offsetY = newCenter.y - yBefore * state.zoom;
 
-    lastDist = newD;
+    // ✅ זה החלק הקריטי: פיצוי יחסי לשינוי zoom
+    state.offsetX -= (lastCenter.x - state.offsetX) * (state.zoom / prevZoom - 1);
+    state.offsetY -= (lastCenter.y - state.offsetY) * (state.zoom / prevZoom - 1);
+
+    // וגם להזיז מעט לפי תנועת האצבעות עצמן
+    state.offsetX += newCenter.x - lastCenter.x;
+    state.offsetY += newCenter.y - lastCenter.y;
+
+    lastDist = newDist;
     lastCenter = newCenter;
   } else if (e.touches.length === 1 && isPanning) {
-    const t = e.touches[0];
-    const pos = { x: t.clientX - rect.left, y: t.clientY - rect.top };
-    state.offsetX += pos.x - last.x;
-    state.offsetY += pos.y - last.y;
-    last = pos;
+    state.offsetX += e.touches[0].clientX - last.x;
+    state.offsetY += e.touches[0].clientY - last.y;
+    last = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   }
+
   e.preventDefault();
 }, { passive: false });
 
@@ -223,6 +214,7 @@ function getCenter(touches, rect) {
 
 window.ctx = ctx;
 window.render = render;
+
 
 
 
