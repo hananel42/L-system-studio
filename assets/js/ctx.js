@@ -110,114 +110,91 @@ render();
 // ---- Controls ----
 document.getElementById('resetBtn').onclick = () => { state.zoom = 1; state.offsetX = 0; state.offsetY = 0; };
 
-let isPanning = false;
-let last = { x: 0, y: 0 };
-
-canvas.addEventListener('mousedown', e => {
-  isPanning = true;
-  last = getCanvasCoordsFromClient(e.clientX, e.clientY);
-});
-
-canvas.addEventListener('mousemove', e => {
-  if (isPanning) {
-    const pos = getCanvasCoordsFromClient(e.clientX, e.clientY);
-    state.offsetX += pos.x - last.x;
-    state.offsetY += pos.y - last.y;
-    last = pos;
-  }
-});
-
-canvas.addEventListener('mouseup', () => isPanning = false);
-canvas.addEventListener('mouseleave', () => isPanning = false);
-
-// --- WHEEL: השתמש ב-coords של canvas (מוכפלים ב-dpr) ---
+// =====================
+// ✅ הגדלה / הקטנה עם עכבר
+// =====================
 canvas.addEventListener('wheel', e => {
-  e.preventDefault();
-  const rect = canvas.getBoundingClientRect();
-  // המרת המיקום של העכבר ל-canvas pixels
-  const mouse = getCanvasCoordsFromClient(e.clientX, e.clientY);
+  e.preventDefault();
 
-  const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
-  const prevZoom = state.zoom;
-  state.zoom *= zoomFactor;
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left - canvas.width / 2 - state.offsetX;
+  const mouseY = e.clientY - rect.top - canvas.height / 2 - state.offsetY;
 
-  // פיצוי מדויק ביחידות canvas pixels
-  state.offsetX -= (mouse.x - state.offsetX) * (state.zoom / prevZoom - 1);
-  state.offsetY -= (mouse.y - state.offsetY) * (state.zoom / prevZoom - 1);
+  const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+  const prevZoom = state.zoom;
+  state.zoom *= zoomFactor;
+
+  // שמירת נקודת המיקוד של הסמן
+  state.offsetX -= mouseX * (state.zoom / prevZoom - 1);
+  state.offsetY -= mouseY * (state.zoom / prevZoom - 1);
 }, { passive: false });
 
-// --- TOUCH: גם כאן המרות ל-canvas pixels ---
+
+// =====================
+// ✅ הגדלה עם שתי אצבעות
+// =====================
+let isTouchZoom = false;
 let lastDist = null;
 let lastCenter = null;
 
 canvas.addEventListener('touchstart', e => {
-  const rect = canvas.getBoundingClientRect();
-  if (e.touches.length === 2) {
-    lastDist = getDist(e.touches);
-    lastCenter = getCenter(e.touches, rect); // returns in canvas pixels
-  } else if (e.touches.length === 1) {
-    isPanning = true;
-    const p = getCanvasCoordsFromClient(e.touches[0].clientX, e.touches[0].clientY);
-    last = p;
-  }
-  e.preventDefault();
+  if (e.touches.length === 2) {
+    lastDist = getDist(e.touches);
+    const rect = canvas.getBoundingClientRect();
+    lastCenter = getCenter(e.touches, rect);
+    isTouchZoom = true;
+  }
 }, { passive: false });
 
 canvas.addEventListener('touchmove', e => {
-  const rect = canvas.getBoundingClientRect();
-  if (e.touches.length === 2 && lastDist && lastCenter) {
-    const newDist = getDist(e.touches);
-    const newCenter = getCenter(e.touches, rect); // canvas pixels
-    const zoomFactor = newDist / lastDist;
-    const prevZoom = state.zoom;
-    state.zoom *= zoomFactor;
+  if (e.touches.length === 2 && isTouchZoom && lastDist && lastCenter) {
+    const rect = canvas.getBoundingClientRect();
+    const newDist = getDist(e.touches);
+    const newCenter = getCenter(e.touches, rect);
 
-    // פיצוי יחסי לשינוי zoom (ב־canvas pixels)
-    state.offsetX -= (lastCenter.x - state.offsetX) * (state.zoom / prevZoom - 1);
-    state.offsetY -= (lastCenter.y - state.offsetY) * (state.zoom / prevZoom - 1);
+    const zoomFactor = newDist / lastDist;
+    const prevZoom = state.zoom;
+    state.zoom *= zoomFactor;
 
-    // וגם להזיז לפי תנועת מרכז האצבעות
-    state.offsetX += newCenter.x - lastCenter.x;
-    state.offsetY += newCenter.y - lastCenter.y;
+    // תיאום מרכז ההגדלה
+    const centerX = newCenter.x - canvas.width / 2 - state.offsetX;
+    const centerY = newCenter.y - canvas.height / 2 - state.offsetY;
 
-    lastDist = newDist;
-    lastCenter = newCenter;
-  } else if (e.touches.length === 1 && isPanning) {
-    const pos = getCanvasCoordsFromClient(e.touches[0].clientX, e.touches[0].clientY);
-    state.offsetX += pos.x - last.x;
-    state.offsetY += pos.y - last.y;
-    last = pos;
-  }
-  e.preventDefault();
+    state.offsetX -= centerX * (state.zoom / prevZoom - 1);
+    state.offsetY -= centerY * (state.zoom / prevZoom - 1);
+
+    lastDist = newDist;
+    lastCenter = newCenter;
+  }
+  e.preventDefault();
 }, { passive: false });
 
 canvas.addEventListener('touchend', e => {
-  if (e.touches.length < 2) {
-    lastDist = null;
-    lastCenter = null;
-  }
-  if (e.touches.length === 0) isPanning = false;
+  if (e.touches.length < 2) {
+    isTouchZoom = false;
+    lastDist = null;
+    lastCenter = null;
+  }
 }, { passive: false });
 
+// פונקציות עזר
 function getDist(touches) {
-  const dx = touches[0].clientX - touches[1].clientX;
-  const dy = touches[0].clientY - touches[1].clientY;
-  return Math.hypot(dx, dy) * dpr; // להחזיר גם ב-canvas pixels
+  const dx = touches[0].clientX - touches[1].clientX;
+  const dy = touches[0].clientY - touches[1].clientY;
+  return Math.hypot(dx, dy);
 }
 
 function getCenter(touches, rect) {
-  // מחזיר מרכז ב־canvas
- pixels
-  return {
-    x: ((touches[0].clientX + touches[1].clientX) / 2 - rect.left) * dpr,
-    y: ((touches[0].clientY + touches[1].clientY) / 2 - rect.top) * dpr
-  };
+  return {
+    x: ((touches[0].clientX + touches[1].clientX) / 2) - rect.left,
+    y: ((touches[0].clientY + touches[1].clientY) / 2) - rect.top
+  };
 }
-
 
 
 window.ctx = ctx;
 window.render = render;
+
 
 
 
