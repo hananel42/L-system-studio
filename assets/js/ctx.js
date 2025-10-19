@@ -110,47 +110,31 @@ render();
 // ---- Controls ----
 document.getElementById('resetBtn').onclick = () => { state.zoom = 1; state.offsetX = 0; state.offsetY = 0; };
 
-// =====================
-// ✅ הגדלה / הקטנה עם עכבר
-// =====================
-canvas.addEventListener('wheel', e => {
-  e.preventDefault();
-
-  const rect = canvas.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left - canvas.width / 2 - state.offsetX;
-  const mouseY = e.clientY - rect.top - canvas.height / 2 - state.offsetY;
-
-  const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
-  const prevZoom = state.zoom;
-  state.zoom *= zoomFactor;
-
-  // שמירת נקודת המיקוד של הסמן
-  state.offsetX -= mouseX * (state.zoom / prevZoom - 1);
-  state.offsetY -= mouseY * (state.zoom / prevZoom - 1);
-}, { passive: false });
-
-
-// =====================
-// ✅ הגדלה עם שתי אצבעות
-// =====================
-let isTouchZoom = false;
+let isPanning = false;
+let last = { x: 0, y: 0 };
 let lastDist = null;
 let lastCenter = null;
 
+// ---- TOUCH START ----
 canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+
   if (e.touches.length === 2) {
     lastDist = getDist(e.touches);
     const rect = canvas.getBoundingClientRect();
     lastCenter = getCenter(e.touches, rect);
-    isTouchZoom = true;
-	  
+  } else if (e.touches.length === 1) {
+    isPanning = true;
+    last = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   }
-	e.preventDefault();
 }, { passive: false });
 
+// ---- TOUCH MOVE ----
 canvas.addEventListener('touchmove', e => {
-  if (e.touches.length === 2 && isTouchZoom && lastDist && lastCenter) {
-    const rect = canvas.getBoundingClientRect();
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+
+  if (e.touches.length === 2 && lastDist && lastCenter) {
     const newDist = getDist(e.touches);
     const newCenter = getCenter(e.touches, rect);
 
@@ -158,28 +142,38 @@ canvas.addEventListener('touchmove', e => {
     const prevZoom = state.zoom;
     state.zoom *= zoomFactor;
 
-    // תיאום מרכז ההגדלה
+    // פיצוי סביב מרכז ההגדלה של שתי האצבעות
     const centerX = newCenter.x - canvas.width / 2 - state.offsetX;
     const centerY = newCenter.y - canvas.height / 2 - state.offsetY;
 
     state.offsetX -= centerX * (state.zoom / prevZoom - 1);
     state.offsetY -= centerY * (state.zoom / prevZoom - 1);
 
+    // הזזה לפי תנועת המרכז עצמו
+    state.offsetX += newCenter.x - lastCenter.x;
+    state.offsetY += newCenter.y - lastCenter.y;
+
     lastDist = newDist;
     lastCenter = newCenter;
+
+  } else if (e.touches.length === 1 && isPanning) {
+    // גרירה עם אצבע אחת
+    state.offsetX += e.touches[0].clientX - last.x;
+    state.offsetY += e.touches[0].clientY - last.y;
+    last = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   }
-  e.preventDefault();
 }, { passive: false });
 
+// ---- TOUCH END ----
 canvas.addEventListener('touchend', e => {
   if (e.touches.length < 2) {
-    isTouchZoom = false;
     lastDist = null;
     lastCenter = null;
   }
+  if (e.touches.length === 0) isPanning = false;
 }, { passive: false });
 
-// פונקציות עזר
+// ---- פונקציות עזר ----
 function getDist(touches) {
   const dx = touches[0].clientX - touches[1].clientX;
   const dy = touches[0].clientY - touches[1].clientY;
@@ -193,9 +187,9 @@ function getCenter(touches, rect) {
   };
 }
 
-
 window.ctx = ctx;
 window.render = render;
+
 
 
 
