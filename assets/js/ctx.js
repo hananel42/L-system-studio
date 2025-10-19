@@ -113,64 +113,73 @@ document.getElementById('resetBtn').onclick = () => { state.zoom = 1; state.offs
 let isPanning = false;
 let last = { x: 0, y: 0 };
 
+function getCanvasCoords(e) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top
+  };
+}
+
 canvas.addEventListener('mousedown', e => {
   isPanning = true;
-  last = { x: e.clientX, y: e.clientY };
+  const pos = getCanvasCoords(e);
+  last = pos;
 });
 
 canvas.addEventListener('mousemove', e => {
   if (isPanning) {
-    state.offsetX += e.clientX - last.x;
-    state.offsetY += e.clientY - last.y;
-    last = { x: e.clientX, y: e.clientY };
+    const pos = getCanvasCoords(e);
+    state.offsetX += pos.x - last.x;
+    state.offsetY += pos.y - last.y;
+    last = pos;
   }
 });
 
 canvas.addEventListener('mouseup', () => isPanning = false);
 canvas.addEventListener('mouseleave', () => isPanning = false);
 
-// ✅ zoom מנקודת הסמן
+// ✅ zoom עם pivot מדויק לפי הסמן
 canvas.addEventListener('wheel', e => {
   e.preventDefault();
-
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
   const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
-  const mouseX = e.clientX;
-  const mouseY = e.clientY;
 
-  // לחשב את מיקום הנקודה בתוכן לפני ההגדלה
   const xBefore = (mouseX - state.offsetX) / state.zoom;
   const yBefore = (mouseY - state.offsetY) / state.zoom;
 
-  // לעדכן zoom
   state.zoom *= zoomFactor;
 
-  // לחשב פיצוי כך שהנקודה תישאר באותו מקום במסך
   state.offsetX = mouseX - xBefore * state.zoom;
   state.offsetY = mouseY - yBefore * state.zoom;
 }, { passive: false });
 
-// ✅ touch gestures
+// ✅ touch gestures (כולל פיצוי למיקום ה-canvas)
 let lastDist = null;
 let lastCenter = null;
 
 canvas.addEventListener('touchstart', e => {
+  const rect = canvas.getBoundingClientRect();
   if (e.touches.length === 2) {
     lastDist = getDist(e.touches);
-    lastCenter = getCenter(e.touches);
+    lastCenter = getCenter(e.touches, rect);
   } else if (e.touches.length === 1) {
     isPanning = true;
-    last = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    const t = e.touches[0];
+    last = { x: t.clientX - rect.left, y: t.clientY - rect.top };
   }
   e.preventDefault();
 }, { passive: false });
 
 canvas.addEventListener('touchmove', e => {
+  const rect = canvas.getBoundingClientRect();
   if (e.touches.length === 2 && lastDist && lastCenter) {
     const newD = getDist(e.touches);
-    const newCenter = getCenter(e.touches);
+    const newCenter = getCenter(e.touches, rect);
     const zoomFactor = newD / lastDist;
 
-    // pivot zoom סביב מרכז שתי האצבעות
     const xBefore = (lastCenter.x - state.offsetX) / state.zoom;
     const yBefore = (lastCenter.y - state.offsetY) / state.zoom;
 
@@ -181,9 +190,11 @@ canvas.addEventListener('touchmove', e => {
     lastDist = newD;
     lastCenter = newCenter;
   } else if (e.touches.length === 1 && isPanning) {
-    state.offsetX += e.touches[0].clientX - last.x;
-    state.offsetY += e.touches[0].clientY - last.y;
-    last = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    const t = e.touches[0];
+    const pos = { x: t.clientX - rect.left, y: t.clientY - rect.top };
+    state.offsetX += pos.x - last.x;
+    state.offsetY += pos.y - last.y;
+    last = pos;
   }
   e.preventDefault();
 }, { passive: false });
@@ -202,16 +213,17 @@ function getDist(touches) {
   return Math.hypot(dx, dy);
 }
 
-function getCenter(touches) {
+function getCenter(touches, rect) {
   return {
-    x: (touches[0].clientX + touches[1].clientX) / 2,
-    y: (touches[0].clientY + touches[1].clientY) / 2
+    x: ((touches[0].clientX + touches[1].clientX) / 2) - rect.left,
+    y: ((touches[0].clientY + touches[1].clientY) / 2) - rect.top
   };
 }
 
 
 window.ctx = ctx;
 window.render = render;
+
 
 
 
