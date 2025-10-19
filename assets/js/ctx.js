@@ -48,7 +48,6 @@ function drawTreeParallel(ctx, canvas, tree,maxIndex) {
 	steps++;
   }
 
-  ctx.restore();
 
   return {done: active.length === 0 };
 }
@@ -189,6 +188,7 @@ function getCenter(touches, rect) {
 
 window.ctx = ctx;
 window.render = render;
+
 
 
 
