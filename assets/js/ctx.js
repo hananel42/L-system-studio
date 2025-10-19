@@ -143,7 +143,9 @@ canvas.addEventListener('touchstart', e => {
     const rect = canvas.getBoundingClientRect();
     lastCenter = getCenter(e.touches, rect);
     isTouchZoom = true;
+	  
   }
+	e.preventDefault();
 }, { passive: false });
 
 canvas.addEventListener('touchmove', e => {
@@ -194,6 +196,7 @@ function getCenter(touches, rect) {
 
 window.ctx = ctx;
 window.render = render;
+
 
 
 
