@@ -108,47 +108,90 @@ function render() {
 render();
 // ---- Controls ----
 document.getElementById('resetBtn').onclick = () => { state.zoom = 1; state.offsetX = 0; state.offsetY = 0; };
+// ---- pan & zoom (mouse + touch) ----
+const dpr = window.devicePixelRatio || 1;
 
+function clientToCanvas(clientX, clientY) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: (clientX - rect.left) * dpr,
+    y: (clientY - rect.top) * dpr
+  };
+}
+
+// --- Mouse pan
 let isPanning = false;
 let last = { x: 0, y: 0 };
+
+canvas.addEventListener('mousedown', e => {
+  e.preventDefault();
+  isPanning = true;
+  last = clientToCanvas(e.clientX, e.clientY);
+});
+
+canvas.addEventListener('mousemove', e => {
+  if (!isPanning) return;
+  const pos = clientToCanvas(e.clientX, e.clientY);
+  // offsets are in canvas pixels (device pixels) so add delta directly
+  state.offsetX += pos.x - last.x;
+  state.offsetY += pos.y - last.y;
+  last = pos;
+});
+
+canvas.addEventListener('mouseup', () => { isPanning = false; });
+canvas.addEventListener('mouseleave', () => { isPanning = false; });
+
+// --- Wheel zoom (around mouse)
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const mouse = clientToCanvas(e.clientX, e.clientY);
+  // mouse position relative to the drawing origin (canvas center + offset)
+  const mx = mouse.x - (canvas.width / 2) - state.offsetX;
+  const my = mouse.y - (canvas.height / 2) - state.offsetY;
+
+  const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+  const prevZoom = state.zoom;
+  state.zoom *= zoomFactor;
+
+  // compensate so the point under the cursor stays fixed
+  state.offsetX -= mx * (state.zoom / prevZoom - 1);
+  state.offsetY -= my * (state.zoom / prevZoom - 1);
+}, { passive: false });
+
+// --- Touch: pan (1 finger) & pinch (2 fingers)
 let lastDist = null;
 let lastCenter = null;
 
-// ---- TOUCH START ----
 canvas.addEventListener('touchstart', e => {
   e.preventDefault();
-
   if (e.touches.length === 2) {
-    lastDist = getDist(e.touches);
-    const rect = canvas.getBoundingClientRect();
-    lastCenter = getCenter(e.touches, rect);
+    lastDist = getDist(e.touches) * dpr;            // in canvas pixels
+    lastCenter = getCenter(e.touches);             // in canvas pixels
   } else if (e.touches.length === 1) {
     isPanning = true;
-    last = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    last = clientToCanvas(e.touches[0].clientX, e.touches[0].clientY);
   }
 }, { passive: false });
 
-// ---- TOUCH MOVE ----
 canvas.addEventListener('touchmove', e => {
   e.preventDefault();
-  const rect = canvas.getBoundingClientRect();
-
   if (e.touches.length === 2 && lastDist && lastCenter) {
-    const newDist = getDist(e.touches);
-    const newCenter = getCenter(e.touches, rect);
+    const newDist = getDist(e.touches) * dpr;      // canvas pixels
+    const newCenter = getCenter(e.touches);        // canvas pixels
 
     const zoomFactor = newDist / lastDist;
     const prevZoom = state.zoom;
     state.zoom *= zoomFactor;
 
-    // פיצוי סביב מרכז ההגדלה של שתי האצבעות
-    const centerX = newCenter.x - canvas.width / 2 - state.offsetX;
-    const centerY = newCenter.y - canvas.height / 2 - state.offsetY;
+    // center relative to drawing origin
+    const cx = newCenter.x - (canvas.width / 2) - state.offsetX;
+    const cy = newCenter.y - (canvas.height / 2) - state.offsetY;
 
-    state.offsetX -= centerX * (state.zoom / prevZoom - 1);
-    state.offsetY -= centerY * (state.zoom / prevZoom - 1);
+    // compensate scale change so the pinch-center stays fixed
+    state.offsetX -= cx * (state.zoom / prevZoom - 1);
+    state.offsetY -= cy * (state.zoom / prevZoom - 1);
 
-    // הזזה לפי תנועת המרכז עצמו
+    // also apply movement of the center (two-finger pan)
     state.offsetX += newCenter.x - lastCenter.x;
     state.offsetY += newCenter.y - lastCenter.y;
 
@@ -156,14 +199,13 @@ canvas.addEventListener('touchmove', e => {
     lastCenter = newCenter;
 
   } else if (e.touches.length === 1 && isPanning) {
-    // גרירה עם אצבע אחת
-    state.offsetX += e.touches[0].clientX - last.x;
-    state.offsetY += e.touches[0].clientY - last.y;
-    last = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    const pos = clientToCanvas(e.touches[0].clientX, e.touches[0].clientY);
+    state.offsetX += pos.x - last.x;
+    state.offsetY += pos.y - last.y;
+    last = pos;
   }
 }, { passive: false });
 
-// ---- TOUCH END ----
 canvas.addEventListener('touchend', e => {
   if (e.touches.length < 2) {
     lastDist = null;
@@ -172,22 +214,25 @@ canvas.addEventListener('touchend', e => {
   if (e.touches.length === 0) isPanning = false;
 }, { passive: false });
 
-// ---- פונקציות עזר ----
+// ---- helpers ----
 function getDist(touches) {
   const dx = touches[0].clientX - touches[1].clientX;
   const dy = touches[0].clientY - touches[1].clientY;
-  return Math.hypot(dx, dy);
+  return Math.hypot(dx, dy); // multiplied by dpr where used
 }
 
-function getCenter(touches, rect) {
+function getCenter(touches) {
+  const rect = canvas.getBoundingClientRect();
+  // return center already in canvas pixels
   return {
-    x: ((touches[0].clientX + touches[1].clientX) / 2) - rect.left,
-    y: ((touches[0].clientY + touches[1].clientY) / 2) - rect.top
+    x: ((touches[0].clientX + touches[1].clientX) / 2 - rect.left) * dpr,
+    y: ((touches[0].clientY + touches[1].clientY) / 2 - rect.top) * dpr
   };
 }
 
 window.ctx = ctx;
 window.render = render;
+
 
 
 
