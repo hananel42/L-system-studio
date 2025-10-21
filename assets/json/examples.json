@@ -17,8 +17,9 @@
       },
       "iterations": 6
     },
+	
     {
-      "name": "Dragon Curve (Heighway)",
+      "name": "Dragon Curve",
       "axiom": "FX",
       "rules": [
         {"a":"X","b":"X+YF+"},
@@ -33,6 +34,7 @@
       },
       "iterations": 12
     },
+	
     {
       "name": "Koch Snowflake",
       "axiom": "F--F--F",
@@ -46,6 +48,7 @@
       },
       "iterations": 4
     },
+	
     {
       "name": "Sierpinski Triangle",
       "axiom": "F-G-G",
@@ -61,6 +64,7 @@
       },
       "iterations": 6
     },
+	
     {
       "name": "Hilbert Curve",
       "axiom": "A",
@@ -77,6 +81,7 @@
       },
       "iterations": 5
     },
+	
     {
       "name": "Peano Curve",
       "axiom": "X",
@@ -93,6 +98,7 @@
       },
       "iterations": 3
     },
+	
     {
       "name": "Gosper Curve (Flowsnake / Peano-Gosper)",
       "axiom": "A",
@@ -109,6 +115,7 @@
       },
       "iterations": 4
     },
+	
     {
       "name": "Levy C Curve",
       "axiom": "F",
@@ -122,6 +129,7 @@
       },
       "iterations": 10
     },
+	
     {
       "name": "Terdragon",
       "axiom": "F",
@@ -135,19 +143,8 @@
       },
       "iterations": 8
     },
-    {
-      "name": "Quadratic Koch Island",
-      "axiom": "F+F+F+F",
-      "rules": [
-        {"a":"F","b":"F+F-F-F+F"}
-      ],
-      "symbols": {
-        "F": {"type":"draw","length":5,"color":"#ff4500"},
-        "+": {"type":"turn","angle":90},
-        "-": {"type":"turn","angle":-90}
-      },
-      "iterations": 3
-    },
+	
+    
     {
       "name": "Sierpinski Arrowhead",
       "axiom": "A",
@@ -178,6 +175,7 @@
       },
       "iterations": 5
     },
+	
     {
       "name": "Minkowski Sausage",
       "axiom": "F",
@@ -191,21 +189,9 @@
       },
       "iterations": 5
     },
+	
     {
-      "name": "Vicsek Fractal",
-      "axiom": "F",
-      "rules": [
-        {"a":"F","b":"F+F-F+F"}
-      ],
-      "symbols": {
-        "F": {"type":"draw","length":4,"color":"#8FBC8F"},
-        "+": {"type":"turn","angle":90},
-        "-": {"type":"turn","angle":-90}
-      },
-      "iterations": 4
-    },
-    {
-      "name": "Sierpinski Carpet (L-system variant)",
+      "name": "Sierpinski Carpet ",
       "axiom": "F+F+F+F",
       "rules": [
         {"a":"F","b":"F+F-F-F+F"}
@@ -216,19 +202,6 @@
         "-": {"type":"turn","angle":-90}
       },
       "iterations": 4
-    },
-    {
-      "name": "Cantor Dust (line variant)",
-      "axiom": "F",
-      "rules": [
-        {"a":"F","b":"F-F-F"}
-      ],
-      "symbols": {
-        "F": {"type":"draw","length":8,"color":"#A0522D"},
-        "-": {"type":"turn","angle":0},
-        "+": {"type":"turn","angle":0}
-      },
-      "iterations": 6
     },
     {
       "name": "Pentagon Snowflake",
@@ -256,38 +229,7 @@
       },
       "iterations": 4
     },
-    {
-      "name": "Binary Tree",
-      "axiom": "0",
-      "rules": [
-        {"a":"1","b":"11"},
-        {"a":"0","b":"1[0]0"}
-      ],
-      "symbols": {
-        "1": {"type":"draw","length":7,"color":"#556B2F"},
-        "0": {"type":"draw","length":7,"color":"#556B2F"},
-        "[": {"type":"push"},
-        "]": {"type":"pop"}
-      },
-      "iterations": 7
-    },
-    {
-      "name": "Fern / Weed (variant)",
-      "axiom": "X",
-      "rules": [
-        {"a":"X","b":"F-[[X]+X]+F[+FX]-X"},
-        {"a":"F","b":"FF"}
-      ],
-      "symbols": {
-        "F": {"type":"draw","length":5,"color":"#228B22"},
-        "X": {"type":"nop"},
-        "+": {"type":"turn","angle":22.5},
-        "-": {"type":"turn","angle":-22.5},
-        "[": {"type":"push"},
-        "]": {"type":"pop"}
-      },
-      "iterations": 6
-    },
+    
     {
       "name": "Stochastic-like Tree (deterministic simple)",
       "axiom": "F",
@@ -303,65 +245,10 @@
       },
       "iterations": 5
     },
-    {
-      "name": "Gosper Island (alternate simple)",
-      "axiom": "F",
-      "rules": [
-        {"a":"F","b":"F+F--F+F"}
-      ],
-      "symbols": {
-        "F": {"type":"draw","length":3,"color":"#FF7F50"},
-        "+": {"type":"turn","angle":60},
-        "-": {"type":"turn","angle":-60}
-      },
-      "iterations": 5
-    },
-    {
-      "name": "Hilbert Variant (shorter)",
-      "axiom": "A",
-      "rules": [
-        {"a":"A","b":"-BF+AFA+FB-"},
-        {"a":"B","b":"+AF-BFB-FA+"}
-      ],
-      "symbols": {
-        "F": {"type":"draw","length":4,"color":"#9400d3"},
-        "+": {"type":"turn","angle":90},
-        "-": {"type":"turn","angle":-90},
-        "A": {"type":"nop"},
-        "B": {"type":"nop"}
-      },
-      "iterations": 4
-    },
-    {
-      "name": "Algae (Fibonacci-like)",
-      "axiom": "A",
-      "rules": [
-        {"a":"A","b":"AB"},
-        {"a":"B","b":"A"}
-      ],
-      "symbols": {
-        "A": {"type":"draw","length":6,"color":"#20B2AA"},
-        "B": {"type":"draw","length":6,"color":"#20B2AA"}
-      },
-      "iterations": 9
-    },
-    {
-      "name": "Myrtle / Fractal Weeds (variant)",
-      "axiom": "X",
-      "rules": [
-        {"a":"X","b":"F-[[X]+X]+F[+FX]-X"},
-        {"a":"F","b":"FF"}
-      ],
-      "symbols": {
-        "F": {"type":"draw","length":4,"color":"#2E8B57"},
-        "X": {"type":"nop"},
-        "+": {"type":"turn","angle":20},
-        "-": {"type":"turn","angle":-20},
-        "[": {"type":"push"},
-        "]": {"type":"pop"}
-      },
-      "iterations": 6
-    },
+    
+    
+    
+    
     {
       "name": "Zigzag Curve",
       "axiom": "F",
@@ -372,34 +259,6 @@
         "F": {"type":"draw","length":6,"color":"#ff1493"},
         "+": {"type":"turn","angle":90},
         "-": {"type":"turn","angle":-90}
-      },
-      "iterations": 4
-    },
-    {
-      "name": "Menger / Carpet-like (variant)",
-      "axiom": "F+F+F+F",
-      "rules": [
-        {"a":"F","b":"F+F-F-F+F"}
-      ],
-      "symbols": {
-        "F": {"type":"draw","length":5,"color":"#4B0082"},
-        "+": {"type":"turn","angle":90},
-        "-": {"type":"turn","angle":-90}
-      },
-      "iterations": 4
-    },
-    {
-      "name": "Gosper Flowsnake (alternate coloring)",
-      "axiom": "A",
-      "rules": [
-        {"a":"A","b":"A-B--B+A++AA+B-"},
-        {"a":"B","b":"+A-BB--B-A++A+B"}
-      ],
-      "symbols": {
-        "A": {"type":"draw","length":5,"color":"#FFD700"},
-        "B": {"type":"draw","length":5,"color":"#ADFF2F"},
-        "+": {"type":"turn","angle":60},
-        "-": {"type":"turn","angle":-60}
       },
       "iterations": 4
     }
