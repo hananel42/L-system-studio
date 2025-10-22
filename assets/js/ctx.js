@@ -52,7 +52,7 @@ function drawTreeParallel(ctx, canvas, tree,maxIndex) {
 }
 
 window.render = function () {
-	
+	drawn = false;
     canvas.width = canvas.clientWidth * devicePixelRatio;
     canvas.height = canvas.clientHeight * devicePixelRatio;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -103,7 +103,7 @@ window.render = function () {
 	}
     ctx.restore();
 	if (animI>=shapeData.points.length || params.animType == "none") drawn = true;
-	else {requestAnimationFrame(render);drawn = false;}
+	else requestAnimationFrame(render);
 }
 render();
 // ---- Controls ----
@@ -238,6 +238,7 @@ function getCenter(touches) {
 
 window.ctx = ctx;
 window.render = render;
+
 
 
 
