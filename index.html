@@ -176,6 +176,7 @@
             document.getElementById('genString').value = shapeData.meta.text;
 			document.getElementById('lenStr').textContent = `Generated String (length: ${shapeData.meta.text.length})`;
 			animI=0;
+			if (drawn){render();}
         }
 		window.loadParams = function(newparams){
 			params = {...params,...newparams};
