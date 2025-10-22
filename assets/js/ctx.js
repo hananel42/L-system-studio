@@ -3,8 +3,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const state = { zoom: 1, offsetX: 0, offsetY: 0 };
 window.animI = 0;
-
-
+window.drawn = false;
 function drawTreeParallel(ctx, canvas, tree,maxIndex) {
 
   let steps = 0;
@@ -52,7 +51,7 @@ function drawTreeParallel(ctx, canvas, tree,maxIndex) {
   return {done: active.length === 0 };
 }
 
-function render() {
+window.render = function () {
 	
     canvas.width = canvas.clientWidth * devicePixelRatio;
     canvas.height = canvas.clientHeight * devicePixelRatio;
@@ -103,11 +102,12 @@ function render() {
 		}
 	}
     ctx.restore();
-    requestAnimationFrame(render);
+	if (animI>=shapeData.points.length || params.animType == "none") drawn = true;
+	if (!drawn) requestAnimationFrame(render);
 }
 render();
 // ---- Controls ----
-document.getElementById('resetBtn').onclick = () => { state.zoom = 1; state.offsetX = 0; state.offsetY = 0; };
+document.getElementById('resetBtn').onclick = () => { state.zoom = 1; state.offsetX = 0; state.offsetY = 0; if (drawn){render();}};
 // ---- pan & zoom (mouse + touch) ----
 const dpr = window.devicePixelRatio || 1;
 
@@ -127,6 +127,7 @@ canvas.addEventListener('mousedown', e => {
   e.preventDefault();
   isPanning = true;
   last = clientToCanvas(e.clientX, e.clientY);
+  if (drawn){render();}
 });
 
 canvas.addEventListener('mousemove', e => {
@@ -136,6 +137,7 @@ canvas.addEventListener('mousemove', e => {
   state.offsetX += pos.x - last.x;
   state.offsetY += pos.y - last.y;
   last = pos;
+  if (drawn){render();}
 });
 
 canvas.addEventListener('mouseup', () => { isPanning = false; });
@@ -156,6 +158,7 @@ canvas.addEventListener('wheel', e => {
   // compensate so the point under the cursor stays fixed
   state.offsetX -= mx * (state.zoom / prevZoom - 1);
   state.offsetY -= my * (state.zoom / prevZoom - 1);
+  if (drawn){render();}
 }, { passive: false });
 
 // --- Touch: pan (1 finger) & pinch (2 fingers)
@@ -171,6 +174,7 @@ canvas.addEventListener('touchstart', e => {
     isPanning = true;
     last = clientToCanvas(e.touches[0].clientX, e.touches[0].clientY);
   }
+  if (drawn){render();}
 }, { passive: false });
 
 canvas.addEventListener('touchmove', e => {
@@ -204,6 +208,7 @@ canvas.addEventListener('touchmove', e => {
     state.offsetY += pos.y - last.y;
     last = pos;
   }
+  if (drawn){render();}
 }, { passive: false });
 
 canvas.addEventListener('touchend', e => {
@@ -212,6 +217,7 @@ canvas.addEventListener('touchend', e => {
     lastCenter = null;
   }
   if (e.touches.length === 0) isPanning = false;
+  if (drawn){render();}
 }, { passive: false });
 
 // ---- helpers ----
