@@ -29,10 +29,11 @@ If you like this project, please give it a ⭐️!
 
 for more information about the project [L system wiki](https://github.com/hananel42/L-system-studio/wiki)
 ---
-![screenshot](icon/screenshot.png)
+![screenshot](assets/image/screenshot.png)
 ---
 ![example](assets/image/lsystem.png)
 ---
+
 
 
 
