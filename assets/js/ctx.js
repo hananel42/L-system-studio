@@ -103,7 +103,7 @@ window.render = function () {
 	}
     ctx.restore();
 	if (animI>=shapeData.points.length || params.animType == "none") drawn = true;
-	if (!drawn) requestAnimationFrame(render);
+	else requestAnimationFrame(render);
 }
 render();
 // ---- Controls ----
@@ -238,6 +238,7 @@ function getCenter(touches) {
 
 window.ctx = ctx;
 window.render = render;
+
 
 
 
