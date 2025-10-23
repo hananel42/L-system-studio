@@ -330,7 +330,7 @@ class InteractiveCanvas {
   push(){ this.stack.push([this.x,this.y,this.angle,this.pen_down]); }
   pop(){ if(this.stack.length){ const p=this.stack.pop(); this.x=p[0]; this.y=p[1]; this.angle=p[2]; this.pen_down=p[3]; } }
   penup(){ this.pen_down=false; } pendown(){ this.pen_down=true; }
-  clear(){ this.x=0; this.y=0; this.pen_down=true; this.lines = []; this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height); this._redraw(); }
+  clear(){ this.x=0; this.y=0; this.pen_down=true; this.lines = []; this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);this.angle = 0; this._redraw(); }
   _draw_line_world(line){
     const [x1,y1,x2,y2,width,color] = line;
     const [sx1,sy1] = this._world_to_screen(x1,y1);
@@ -501,3 +501,4 @@ class InteractiveCanvas {
   }
   init_default_symbols();
 })();
+
