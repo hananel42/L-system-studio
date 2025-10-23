@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="he">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Integrated L-System Editor</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <!-- Canvas covering entire screen -->
+  <canvas id="drawCanvas"></canvas>
+
+  <!-- Reset View Button -->
+  <button id="resetViewBtn" class="corner-btn">Reset View</button>
+
+  <!-- Sidebar editor -->
+  <div class="sidebar" id="sidebar">
+    <button class="toggle-btn" id="toggleSidebar">☰</button>
+
+    <div class="editor-content">
+      <div class="label-frame">
+        <div class="title">Axiom</div>
+        <input id="axiomText" type="text" value="X"/>
+      </div>
+
+      <!-- Symbols in <details> -->
+      <details class="label-frame">
+        <summary>Symbols</summary>
+        <div class="sym-list" id="symList"></div>
+        <div class="row">
+          <button id="addSymBtn">Add</button>
+          <button id="removeSymBtn">Remove</button>
+        </div>
+        <div class="form-row"><label>Name:</label><input id="entSymName" type="text" maxlength="1"/></div>
+        <div class="form-row"><label>Params:</label><input id="entSymParams" type="text"/></div>
+        <div class="form-row"><label>Action:</label><input id="entSymAction" type="text"/></div>
+        <div class="row" style="justify-content:flex-end;"><button id="updateSymBtn">Update</button></div>
+      </details>
+
+      <div class="label-frame">
+        <div class="title">Rules</div>
+        <textarea id="rulesText" class="rules">
+#Simple Tree
+F: l<100 -> F(l*2,c+20) :0.9
+X: True -> F[+X]F[-X]F[-X]F[+X] :0.9
++: d<60 -> +(d+5) :0.9
+-: d>-60 -> -(d-5) :0.9
+        </textarea>
+      </div>
+
+      <div class="label-frame controls">
+        <div class="row">
+          <label>Iterations:</label>
+          <input id="iterEntry" type="text" value="5"/>
+        </div>
+        <div class="row" style="margin-top:6px">
+          <button id="runBtn">Run & Draw</button>
+          <button id="validateBtn">Validate Rules</button>
+          <button id="clearBtn">Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  // Toggle sidebar
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('toggleSidebar');
+  toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+  });
+  document.getElementById("runBtn").click();
+</script>
+</body>
+</html>
