@@ -253,8 +253,8 @@ class InteractiveCanvas {
   constructor(canvas, width=900, height=700, bg='white'){
     this.canvas = canvas; this.ctx = canvas.getContext('2d');
     this.width = width; this.height = height; this.canvas.width = width; this.canvas.height = height; this.bg = bg;
-    this.zoom = 1.0; this.rotation_deg = 0.0; this.offset_x = width/2; this.offset_y = height/2;
-    this.x = 0.0; this.y = 0.0; this.angle = -90.0; this.pen_down = true; this.stack = []; this.lines = [];
+    this.zoom = 1.0; this.rotation_deg = -90; this.offset_x = width/2; this.offset_y = height/2;
+    this.x = 0.0; this.y = 0.0; this.angle = 0; this.pen_down = true; this.stack = []; this.lines = [];
     this._pan_last = null; this._is_panning = false;
     this._bindEvents(); this._redraw();
   }
@@ -501,4 +501,5 @@ class InteractiveCanvas {
   }
   init_default_symbols();
 })();
+
 
