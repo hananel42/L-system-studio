@@ -1,0 +1,24 @@
+:root{--ui-w:320px}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+.app{display:flex;height:100vh}
+#ui{width:var(--ui-w);background:#0f1720;color:#e6eef6;padding:14px;box-sizing:border-box;overflow:auto}
+#renderer{flex:1;background:#071021}
+label{font-size:13px;color:#9fb0c8;margin-top:6px;display:block}
+input,textarea,select,button{width:100%;box-sizing:border-box;margin:6px 0;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+textarea{height:90px;font-family:monospace}
+.row{display:flex;gap:8px}
+.row> *{flex:1}
+button{cursor:pointer;background:linear-gradient(90deg,#7c3aed,#3b82f6);border:0;color:white}
+
+.rule-row input {
+  flex: 1;
+  padding: 6px;
+}
+
+button.rule-delete {
+  width: auto;            /* לא לוקח 100% */
+  padding: 4px 8px;       /* קטן ומדויק */
+  background: transparent; /* רקע שקוף */
+  border: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer;
+}
