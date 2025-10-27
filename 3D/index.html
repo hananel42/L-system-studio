@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>L-System 3D Editor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <div id="ui">
+      <h2>L-System 3D Editor</h2>
+
+      <label>Axiom</label>
+      <input id="axiom" value="F" />
+
+      <label>Rules</label>
+      <div id="rules-container"></div>
+      <button id="add-rule">+ Add Rule</button>
+
+      <div class="row">
+        <div>
+          <label>Angle (°)</label>
+          <input id="angle" type="number" value="25" />
+        </div>
+        <div>
+          <label>Step</label>
+          <input id="step" type="number" value="1" />
+        </div>
+      </div>
+
+      <label>Iterations</label>
+      <input id="iterations" type="number" value="4" />
+
+      <div class="row" style="margin-top:8px">
+        <button id="generate">Generate</button>
+        <button id="reset">Reset</button>
+      </div>
+
+      <div class="muted">Controls: Left-drag rotate, Middle-drag pan, Scroll to zoom.</div>
+    </div>
+
+    <div id="renderer"></div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.module.js"
+    }
+  }
+  </script>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
