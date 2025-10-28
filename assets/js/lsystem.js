@@ -59,7 +59,6 @@ window.params = {
 				']': { type: 'pop' }
 			},
 			iterations: 5,
-			length: 6,
 			bg : "#ffffff",
 			animType : "none",
 			animSpeed : 5,
@@ -99,5 +98,6 @@ window.buildLSystemTree = function (params) {
 
 window.shapeData = genLSystem(params);
 window.genLSystem = genLSystem;
+
 
 
