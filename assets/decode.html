@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Decode L-System link</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; padding: 18px; }
+    pre { background:#f6f8fa; padding:12px; border-radius:6px; overflow:auto; max-height:70vh; }
+    .error { color: #b00020; font-weight:600; }
+    .hint { color:#555; margin-top:10px; font-size:0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>Decode L-System link</h1>
+  <div id="out">Reading URL...</div>
+  <div class="hint">Usage: open this page with ?data=&lt;encoded-string&gt; (the same encoding as the site uses).</div>
+
+  <script>
+    (function(){
+      function showJSON(obj) {
+        const out = document.getElementById('out');
+        const pretty = JSON.stringify(obj, null, 2);
+        out.innerHTML = '<pre>' + escapeHtml(pretty) + '</pre>';
+      }
+      function showError(msg) {
+        const out = document.getElementById('out');
+        out.innerHTML = '<div class="error">' + escapeHtml(msg) + '</div>';
+      }
+      window.escapeHtml = function (s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
+      // Read data param
+      const urlParams = new URLSearchParams(location.search);
+      const encoded = urlParams.get('data');
+      if (!encoded) {
+        showError('No data parameter provided in the URL.');
+        return;
+      }
+
+      try {
+        // decode using same pattern as repo: decodeURIComponent(escape(atob(encoded)))
+        // note: escape/unescape are deprecated but used for compatibility with the site's encoder
+        const json = decodeURIComponent(escape(atob(encoded)));
+        const parsed = JSON.parse(json);
+        showJSON(parsed);
+      } catch (e) {
+        // If decoding fails, show a clear message and the caught error in console
+        console.error('Decode error', e);
+        showError('Invalid shared link. Could not decode/parse the data.');
+      }
+    })();
+  </script>
+</body>
+</html>
